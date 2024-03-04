@@ -1,0 +1,26 @@
+/* stylish green is RGBA(158,211,106,255) */
+
+body{
+    background-color: RGBA(40,43,47,255);
+}
+#container {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+#image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    -webkit-mask-image: radial-gradient(at 5% -30%, transparent 50%, black 100%);
+    mask-image: radial-gradient(at 5% -30%, transparent 50%, black 100%);
+}
+#text {
+    z-index: 100;
+    position: absolute;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    left: 10rem;
+    top: 14rem;
+}
