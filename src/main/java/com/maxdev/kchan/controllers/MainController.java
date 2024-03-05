@@ -32,19 +32,26 @@ public class MainController {
     }
 
     @GetMapping("/forum/{section_id}")
-    public String home(Model model, Integer section_id,
-                       @RequestParam("page") Integer page) {
+    public String section(Model model, Integer section_id,
+                          @RequestParam("page") Integer page,
+                          @RequestParam("upd") Boolean upd) {
 //        model.addAttribute("title", "main page");
 //        log.debug("at home via /" + p);
-        return "home";
+        return "section";
+    }
+    @GetMapping("/forum/{section_id}/users")
+    public String section_users(Model model, Integer section_id,
+                                @RequestParam("page") Integer page){
+        return "section_users";
     }
     @GetMapping("/forum/{section_id}/{topic_id}")
-    public String home(Model model, Integer section_id,
-                       Integer topic_id,
-                       @RequestParam("page") Integer page) {
+    public String topic(Model model, Integer section_id,
+                        Integer topic_id,
+                        @RequestParam("page") Integer page,
+                        @RequestParam("upd") Boolean upd) {
 //        model.addAttribute("title", "main page");
 //        log.debug("at home via /" + p);
-        return "home";
+        return "topic";
     }
 
     @GetMapping("/feedback")
