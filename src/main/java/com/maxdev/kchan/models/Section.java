@@ -3,16 +3,14 @@ package com.maxdev.kchan.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
  * Created by ytati
  * on 04.03.2024.
- * @todo constraints
  */
 @Entity
 @Table(name = "sections")
@@ -25,7 +23,7 @@ public class Section {
     private String name;
     @NotNull
     private String description = "";
-    private Date created;
+    private Date created = Date.valueOf(LocalDate.now());
     @ManyToMany(mappedBy = "moderableSections")
     private ArrayList<Usercard> moders;
 }

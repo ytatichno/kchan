@@ -3,15 +3,13 @@ package com.maxdev.kchan.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  * Created by ytati
  * on 04.03.2024.
- * @todo add constraints
  */
 @Entity
 @Table(name = "topics")
@@ -24,7 +22,7 @@ public class Topic {
     private String name;
     @NotNull
     private String description = "";
-    private Date created;
+    private Date created = Date.valueOf(LocalDate.now());
     @ManyToOne
     @JoinColumn(name = "author")
     private Usercard author;

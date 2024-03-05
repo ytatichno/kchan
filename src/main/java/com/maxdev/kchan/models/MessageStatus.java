@@ -8,8 +8,6 @@ import lombok.Data;
 /**
  * Created by ytati
  * on 04.03.2024.
- *
- * @todo add constraints
  */
 @Entity
 @Table(name = "message_statuses")

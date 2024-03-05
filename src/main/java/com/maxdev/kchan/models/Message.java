@@ -5,11 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 /**
  * Created by ytati
  * on 04.03.2024.
- * @todo add constraints
  */
 @Entity
 @Table(name = "messages")
@@ -27,11 +27,11 @@ public class Message {
     @NotNull
     private String message;
     @NotNull
-    private Timestamp created;
+    private Timestamp created = Timestamp.from(Instant.now());
     @ManyToOne
-    @JoinColumn(name="status")
+    @JoinColumn(name = "status")
     private MessageStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="reply")
+    @JoinColumn(name = "reply")
     private Message reply;
 }
