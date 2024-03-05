@@ -27,10 +27,10 @@ public class Topic {
     @JoinColumn(name = "author")
     private Usercard author;
     @ManyToOne
-    @JoinColumn(name = "status")
+    @JoinColumn(name = "status", nullable = false)
     private TopicStatus status;
     @ManyToOne
-    @JoinColumn(name = "section")
+    @JoinColumn(name = "section", nullable = false)
     private Section section;
 
 }

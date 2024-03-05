@@ -26,6 +26,6 @@ public class Credential {
     @NotNull
     private String pwd;
     @OneToOne
-    @JoinColumn(name = "usercard")
+    @JoinColumn(name = "usercard", nullable = false)
     private Usercard usercard;
 }

@@ -19,17 +19,17 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long uid;
     @ManyToOne
-    @JoinColumn(name = "topic")
+    @JoinColumn(name = "topic", nullable = false)
     private Topic topic;
     @ManyToOne
-    @JoinColumn(name = "author")
+    @JoinColumn(name = "author", nullable = false)
     private Usercard author;
     @NotNull
     private String message;
     @NotNull
     private Timestamp created = Timestamp.from(Instant.now());
     @ManyToOne
-    @JoinColumn(name = "status")
+    @JoinColumn(name = "status", nullable = false)
     private MessageStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reply")

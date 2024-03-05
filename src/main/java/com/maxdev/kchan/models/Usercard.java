@@ -36,8 +36,14 @@ public class Usercard {
     private Integer messages = 0;
     @ManyToMany(mappedBy = "moder_id")
     @JoinTable(name = "sections_moders",
-            joinColumns = @JoinColumn(name = "moder_id"),
-            inverseJoinColumns = @JoinColumn(name = "section_id")
+            joinColumns = @JoinColumn(
+                    name = "moder_id",
+                    nullable = false
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "section_id",
+                    nullable = false
+            )
     )
     private ArrayList<Section> moderableSections;
 }
