@@ -25,7 +25,7 @@ CREATE TABLE usercards(
 
 CREATE TABLE credentials(
   id serial primary key,
-  email varchar not null,
+  email varchar not null UNIQUE,
   pwd varchar not null,
   salt varchar not null,
   saltmode integer not null default 1,
