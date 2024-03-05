@@ -29,7 +29,7 @@ CREATE TABLE credentials(
   pwd varchar not null,
   salt varchar not null,
   saltmode integer not null default 1,
-  usercard integer references usercards(id)
+  usercard integer not null references usercards(id)
 );
 
 CREATE TABLE sections(
@@ -50,8 +50,8 @@ CREATE TABLE topics(
   description varchar not null default '',
   created date default CURRENT_DATE,
   author integer references usercards(id),
-  status integer references topic_statuses(id),
-  section integer references sections(id)
+  status integer not null references topic_statuses(id),
+  section integer not null references sections(id)
 );
 
 CREATE TABLE message_statuses(
@@ -61,17 +61,17 @@ CREATE TABLE message_statuses(
 
 CREATE TABLE messages(
   uid bigserial primary key,
-  topic integer references topics(id),
-  author integer references usercards(id),
+  topic integer not null references topics(id),
+  author integer not null references usercards(id),
   message varchar not null, -- len constraint >2
   created timestamp not null default CURRENT_TIMESTAMP,
-  status integer references message_statuses(id),
+  status integer not null references message_statuses(id),
   reply integer references messages
 );
 
 CREATE TABLE sections_moders(
-  section_id integer,
-  moder_id integer,
+  section_id integer not null,
+  moder_id integer not null,
   asigner_id integer references usercards(id),
   asigned date null default CURRENT_DATE,
   primary key(section_id, moder_id)
