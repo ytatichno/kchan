@@ -26,8 +26,7 @@ public class Topic {
     @ManyToOne
     @JoinColumn(name = "author")
     private Usercard author;
-    @ManyToOne
-    @JoinColumn(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TopicStatus status;
     @ManyToOne
     @JoinColumn(name = "section", nullable = false)

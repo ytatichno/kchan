@@ -26,4 +26,8 @@ public class Section {
     private Date created = Date.valueOf(LocalDate.now());
     @ManyToMany(mappedBy = "moderableSections")
     private ArrayList<Usercard> moders;
+
+    private void setId(Integer id){
+        this.id = id;
+    }
 }

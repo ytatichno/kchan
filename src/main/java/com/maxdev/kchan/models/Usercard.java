@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 @Entity
 @Table(name = "usercards")
 @Data
+@NoArgsConstructor
 public class Usercard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +36,7 @@ public class Usercard {
     @NotNull
     @Min(value = 0)
     private Integer messages = 0;
-    @ManyToMany(mappedBy = "moder_id")
+    @ManyToMany
     @JoinTable(name = "sections_moders",
             joinColumns = @JoinColumn(
                     name = "moder_id",

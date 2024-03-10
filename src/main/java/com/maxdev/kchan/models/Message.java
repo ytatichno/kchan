@@ -28,10 +28,11 @@ public class Message {
     private String message;
     @NotNull
     private Timestamp created = Timestamp.from(Instant.now());
-    @ManyToOne
-    @JoinColumn(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private MessageStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reply")
     private Message reply;
 }
+
+
