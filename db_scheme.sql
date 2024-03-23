@@ -21,7 +21,7 @@ CREATE TABLE usercards(
   about varchar not null default '',
   birthday date null,
   regdate date not null default CURRENT_DATE,
-  isAdmin boolean not null default false,
+  is_admin boolean not null default false,
   messages integer not null default 0 check (messages >= 0)
 );
 
@@ -75,7 +75,7 @@ CREATE TABLE sections_moders(
 
 
 -- заполнение БД
-INSERT INTO usercards(nick, about, birthday, regdate, isAdmin)
+INSERT INTO usercards(nick, about, birthday, regdate, is_admin)
 VALUES
 ('admin', 'very oldboy','2003-06-07', '2024-02-18', true),
 ('ancient2', 'very old ','2000-02-15', '2024-02-19', false),
