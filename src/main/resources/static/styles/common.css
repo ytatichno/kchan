@@ -1,7 +1,9 @@
-/* stylish green is RGBA(158,211,106,255) */
+/* stylish green is RGBA(158,211,106,255)  #9ed36a */
 
 body{
-    background-color: RGBA(40,43,47,255);
+    /*background-color: #e5f1e3 !important;*/
+    background-color: rgb(200, 211, 106) !important;
+    /*background-color: RGBA(240,43,47,255);*/
 }
 #container {
     height: 100%;
@@ -23,4 +25,219 @@ body{
     font-weight: bold;
     left: 10rem;
     top: 14rem;
+}
+
+/* usercard view*/
+
+.my-btn{
+    border: 0px;
+    border-radius: 4px;
+    min-height: 40px;
+    min-width: 80px;
+}
+
+.green-btn {
+    margin-top: 20px;
+    /*background: #9ed36a;*/
+    /*background: white;*/
+    background: #558020;
+    border: 0px;
+    border-radius: 4px;
+    color: white;
+    position: relative;
+
+}
+
+.green-btn:hover {
+    transition-duration: 0.1s;
+    /*background: #98be58;*/
+    background: #7b935c;
+    color:white;
+}
+
+.green-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px #cdeecb;
+}
+
+.green-btn:after {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 8px;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all 0.3s ease-in;
+    box-shadow: 0 0 6px 30px;
+}
+
+.green-btn:active:after {
+    box-shadow: 0 0 0 0 white;
+    position: absolute;
+    border-radius: 8px;
+    left: 0;
+    top:0;
+    opacity: 1;
+    transition: 0s;
+}
+
+.green-btn:active {
+    top: 1px;
+}
+
+.input-disabled{
+    /*background: aquamarine;*/
+    pointer-events: none;
+    background-color: #c4cec3 !important;
+}
+.input-disabled-admin-only{
+    /*background: aquamarine;*/
+    pointer-events: none;
+    background-color: #C4CEC3FF !important;
+}
+.btn-disabled{
+    display: none !important;
+}
+.my-form{
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    max-width: 60vw;
+    margin: 5vh auto auto auto;
+    /*padding: 2rem;*/
+    border-radius: 0.8rem;
+    /*background: rgb(200, 211, 106);*/
+    background: #e5f1e3;
+}
+
+.edit-btn{
+    position: relative;
+    float: right;
+    left: 1em;
+    bottom: 1em;
+}
+.edit-btn:after {
+    content: "";
+    display: block;
+
+    /*position: fixed;*/
+    border-radius: 20px;
+    left: 0;
+    top:0;
+    /*position: fixed;*/
+    transform: translateY(18vh) translateX(-20vw);
+
+    width: 0%;
+    height: 0%;
+    opacity: 0;
+    transition: all 0.3s ease-in;
+    box-shadow: -4vw 12vh 128px 340px #e5f1e3;
+
+}
+.edit-btn:active:after {
+    box-shadow: 0 -0 0 0 white;
+    position: absolute;
+    /*display: none;*/
+    /*position: fixed;*/
+    border-radius: 8em;
+    transform: translateY(0) translateX(0);
+
+
+    left: 0;
+    top:0;
+    opacity: 1;
+    transition: 0s ease-in;
+}
+.cancel-btn{
+    position: relative;
+    float: right;
+    left: 1em;
+    bottom: 1em;
+}
+
+.water-btn{
+    height: 4rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0.8rem;
+    border-bottom-right-radius: 0.8rem;
+;
+}
+
+.modal-show{
+    display: block !important;
+}
+
+.darken{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    width: 120vw;
+    height: 120vh;
+    z-index: -1;
+}
+
+
+
+/* forum view */
+.list{
+    width: 80vw;
+    height: 50vh;
+    padding: 1rem;
+    margin-left: 10vw;
+}
+
+.id-col{
+    width: 5%;
+    border-top: rgb(200, 211, 106) solid 1px;
+    border-right: rgb(200, 211, 106) solid 1px;
+}
+
+.list-head{
+    background-color: rgb(128, 128, 128);
+    font-weight: bold;
+}
+
+.col-head{
+    /*border-left: solid 2px white;*/
+    border-right: solid 1px white;
+}
+
+.light-row{
+    background: #e5f1e3;
+    min-height: 4rem;
+}
+.list-head{
+    border-top-left-radius: 0.8rem;
+    border-top-right-radius: 0.8rem;
+    min-height: 2rem;
+}
+
+.list-tail{
+    background: #e5f1e3;
+    border-top: dashed darkgray 2px;
+    border-bottom-left-radius: 0.8rem;
+    border-bottom-right-radius: 0.8rem;
+    min-height: 2rem;
+}
+.name-col{
+    border-top: rgb(200, 211, 106) solid 1px;
+    border-right: rgb(200, 211, 106) solid 1px;
+}
+.greeting{
+    margin-top: 3rem;
+    margin-left: 10vw;
+    margin-bottom: 2rem;
+    color: #e5f1e3;
+    padding: 1rem;
+}
+.red-text{
+    color: red !important;
+}
+.green-text{
+    color: green !important;
 }

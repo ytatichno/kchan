@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://thymeleaf.org">
+<html lang="ru" xmlns:th="https://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}"/>
@@ -15,14 +15,23 @@
 <main >
     <div id="container">
 <!--        <img id="image" width="100%" height="auto" src="/images/bg.jpeg" />-->
-        <div id="text">
-            <h1>Hi👋</h1>
-            <h3 class="lead">Pls log in to continue. If you are new😋... Click on the button!</h3>
-            <div class="w-100" style="margin-top: 1rem">
-                <form action="/signup">
-                    <button type="submit" class="btn btn-warning me-2"><h3>Signup</h3></button>
-                </form>
+        <div class="greeting">
+            <h2>Привет</h2>
+        </div>
+        <div class="list">
+            <div class="list-head row">
+                <div class="col-head" style="width: 5%; border-right: 1px solid white">#</div>
+                <div class="col-md col-head">name</div>
+                <div class="col-lg ">description</div>
             </div>
+            <div class="list-content ">
+                <div class="row light-row" th:each="section: ${sections}">
+                    <div class="id-col" th:text="${section.id}" />
+                    <a class="col-md name-col" th:text="${section.name}" th:href="'/section/' + ${section.id}" />
+                    <div class="col-lg" th:text="${section.description}" style="border-top: rgb(200, 211, 106) 1px solid;"/>
+                </div>
+                </div>
+            <div class="list-tail row"><pager th:insert="~{blocks/pager :: pager}" /></div>
         </div>
 
     </div>
