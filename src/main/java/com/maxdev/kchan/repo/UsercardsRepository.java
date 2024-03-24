@@ -3,9 +3,9 @@ package com.maxdev.kchan.repo;
 import com.maxdev.kchan.models.Usercard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.util.Pair;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -15,13 +15,14 @@ import java.util.Optional;
 public interface UsercardsRepository extends JpaRepository<Usercard, Integer> {
     Optional<Usercard> findUsercardByNick(String nick);
 
+    boolean existsByNick(String nick);
+
     /**
      * it takes list of all topics of this section,
      * then takes all messages with topic(id) in the list,
      * then group it by author and aggregates sum,
      * then sorts it descending by aggregated sum,
      * then takes authors' usercards from this new list
-     * TODO super test coverage
      *
      * @return [[..Usercard, activity]]
      */
@@ -38,7 +39,7 @@ public interface UsercardsRepository extends JpaRepository<Usercard, Integer> {
             ") as stats(author, activity) ON u.id = stats.author",
             nativeQuery = true
     )
-    ArrayList<Pair<Usercard, Integer>> findAllActiveUsersNative(Integer section, Integer limit, Integer offset);
+    List<Map<String, Object>> findAllActiveUsersNative(Integer section, Integer limit, Integer offset);
 }
 
 
