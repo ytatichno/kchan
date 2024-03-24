@@ -63,8 +63,11 @@ class ForumApiTest {
             when(ur.findUsercardByNick(anyString())).thenReturn(Optional.empty());
 
             int id = api.upsertUsercard(usercard);
+            usercard.setId(-5);
+            int anotherId = api.upsertUsercard(usercard);
 
             assertTrue(id >= 1);
+            assertTrue(anotherId >= 1);
         }
 
         @Test
@@ -184,8 +187,11 @@ class ForumApiTest {
                     });
 
             int id = api.upsertSection(section);
+            section.setId(-5);
+            int anotherId = api.upsertSection(section);
 
             assertTrue(id >= 1);
+            assertTrue(anotherId >= 1);
         }
 
         @Test
@@ -299,8 +305,11 @@ class ForumApiTest {
             );
 
             int id = api.upsertTopic(topic);
+            topic.setId(-5);
+            int anotherId = api.upsertTopic(topic);
 
             assertTrue(id >= 1);
+            assertTrue(anotherId >= 1);
         }
 
         @Test
@@ -438,8 +447,12 @@ class ForumApiTest {
             );
 
             long id = api.upsertMessage(message);
+            message.setUid(-5L);
+            long anotherId = api.upsertMessage(message);
 
             assertTrue(id >= 1L);
+            assertTrue(anotherId >= 1L);
+
         }
 
         @Test
@@ -569,7 +582,6 @@ class ForumApiTest {
                 throw new IllegalArgumentException("Lists aren't have same size");
             List<Map<String, Object>> result = new ArrayList<>(entityList.size());
             for (int i = 0; i < entityList.size(); ++i) {
-//                result.add(Pair.of(entityList.get(i), statList.get(i)));
                 if (!(entityList.get(0) instanceof Usercard))
                     throw new IllegalArgumentException("entityList containees doesn't have toMap()");
                 Map<String, Object> map = ((Usercard) entityList.get(i)).toMap();
@@ -613,9 +625,6 @@ class ForumApiTest {
                         List<Long> pagedSequenence = ForumApi.Utils.extractPageFromList(p, sequence).toList();
 
                         return stackListsInMappedTuple(pagedUsercards, pagedSequenence);
-//                        .stream()
-//                                .map(findActiveUsersMapper)
-//                                .toList();
                     }
             );
 
@@ -899,6 +908,12 @@ class ForumApiTest {
                             NoSuchElementException.class,
                             () -> api.banMessage(-5L, null)
                     ),
+                    () -> {
+                        String oldMessage = toBan.getMessage();
+                        api.banMessage(toBan.getUid(), null);
+                        assertEquals(toBan.getMessage(), oldMessage);
+                        assertEquals(toBan.getStatus(), MessageStatus.BANNED);
+                    },
                     () -> {
                         api.banMessage(toBan.getUid(), "** banned: too rude **");
                         assertEquals(toBan.getMessage(), "** banned: too rude **");

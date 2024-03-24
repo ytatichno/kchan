@@ -60,7 +60,6 @@ public class ForumApi {
 
     public int upsertUsercard(@NotNull Usercard usercard)
             throws NonUniqueIdentifierException, ObjectNotFoundException {
-        // @todo check id sequencing
         if (usercard.getId() == null || usercard.getId() < 0) {  // insert
             if (ur.findUsercardByNick(usercard.getNick()).isPresent()) {
                 throw new NonUniqueIdentifierException(usercard.getNick(),
