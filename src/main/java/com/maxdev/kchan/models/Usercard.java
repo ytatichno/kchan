@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,5 +59,17 @@ public class Usercard {
         regdate = (Date) tupleToExtractFrom.get("regdate");
         isAdmin = (Boolean) tupleToExtractFrom.get("is_admin");
         messages = (Integer) tupleToExtractFrom.get("messages");
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> m = new HashMap<>();
+        m.put("id", id);
+        m.put("nick", nick);
+        m.put("about", about);
+        m.put("birthday", birthday);
+        m.put("regdate", regdate);
+        m.put("is_admin", isAdmin);
+        m.put("messages", messages);
+        return m;
     }
 }

@@ -103,7 +103,7 @@ public class UsercardsRepositoryTest {
     }
 
     @Test
-    public void UsercardsRepoitory_DeleteById_ReturnVoid() {
+    public void UsercardsRepository_DeleteById_ReturnVoid() {
         Usercard usercard1 = new Usercard();
         usercard1.setNick("nick1");
         usercardsRepository.save(usercard1);
