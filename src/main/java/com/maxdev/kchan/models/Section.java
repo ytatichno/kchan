@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by ytati
@@ -25,9 +25,9 @@ public class Section {
     private String description = "";
     private Date created = Date.valueOf(LocalDate.now());
     @ManyToMany(mappedBy = "moderableSections")
-    private ArrayList<Usercard> moders;
+    private Set<Usercard> moders;
 
-    private void setId(Integer id){
-        this.id = id;
-    }
+//    private void setId(Integer id){
+//        this.id = id;
+//    }
 }

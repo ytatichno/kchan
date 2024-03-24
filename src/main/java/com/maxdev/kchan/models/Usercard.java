@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by ytati
@@ -47,5 +48,15 @@ public class Usercard {
                     nullable = false
             )
     )
-    private ArrayList<Section> moderableSections;
+    private Set<Section> moderableSections;
+
+    public Usercard(Map<String, Object> tupleToExtractFrom) {
+        id = (Integer) tupleToExtractFrom.get("id");
+        nick = (String) tupleToExtractFrom.get("nick");
+        about = (String) tupleToExtractFrom.get("about");
+        birthday = (Date) tupleToExtractFrom.get("birthday");
+        regdate = (Date) tupleToExtractFrom.get("regdate");
+        isAdmin = (Boolean) tupleToExtractFrom.get("is_admin");
+        messages = (Integer) tupleToExtractFrom.get("messages");
+    }
 }
