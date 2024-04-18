@@ -21,22 +21,22 @@
     <form class="w-50 my-form">
         <div style="padding: 2rem">
             <div class="edit-btn" id="edit-btn">
-                <img onclick="toEditHandler(event)" th:disabled="${!isOwner}" disabled="true"
+                <img onclick="toEditHandler(event)" th:disabled="${!canEdit}" disabled="true"
                  src="https://www.svgrepo.com/show/513824/edit.svg" width="32" height="32"/>
             </div>
-            <div class="cancel-btn btn-disabled" id="cancel-btn" >
-                <img onclick="cancelEditHandler(event)" th:disabled="${!isOwner}" disabled="true"
+            <div class="cancel-btn btn-hidden" id="cancel-btn" >
+                <img onclick="cancelEditHandler(event)" th:disabled="${!canEdit}" disabled="true"
                      src="https://www.svgrepo.com/show/513872/x-circle.svg" width="32" height="32"
                      />
             </div>
             <div class="mb-3">
                 <label for="nick" class="form-label">Nickname</label>
-                <input th:value="${nick}" value="username" type="text" class="form-control input-disabled" id="nick" aria-describedby="nickHelp">
+                <input th:value="${nick}" value="username" type="text" class="form-control test-me" disabled id="nick" aria-describedby="nickHelp">
                 <div id="nickHelp" class="form-text">It's unique</div>
             </div>
             <div class="mb-3">
                 <label for="about" class="form-label">About</label>
-                <textarea th:value="${about}" type="text" class="form-control input-disabled" id="about" > </textarea>
+                <textarea th:value="${about}" type="text" class="form-control input-disabled" id="about" > </textarea>  <!--TODO th:value to th:text-->
             </div>
             <div class="mb-3">
                 <label for="birthday" class="form-label">Birthday</label>
@@ -47,11 +47,11 @@
                 <input th:value="${regdate}" type="date" class="form-control input-disabled-admin-only" id="regdate">
             </div>
             <div class="mb-3 form-check">
-                <input th:value="${isAdmin}" type="checkbox" class="form-check-input" id="isAdmin" disabled>
+                <input th:value="${canEdit}" type="checkbox" class="form-check-input" id="isAdmin" disabled>
                 <label class="form-check-label" for="isAdmin">Is admin</label>
             </div>
         </div>
-        <button id="form-btn" type="submit" class="my-btn green-btn btn-disabled water-btn w-100">Submit</button>
+        <button id="form-btn" type="submit" class="my-btn green-btn btn-hidden water-btn w-100">Submit</button>
     </form>
 <!--    make it with icon-->
 <!--    <button onclick="cancelEditHandler(event)">another</button>-->
@@ -84,31 +84,36 @@
 
 </body>
 <script th:inline="javascript">/*<![CDATA[*/
-    const isAdmin = /*[[${isAdmin}]]*/ false;  // TODO check if admin viewing not is admin's usercard
-    const isOwner = /*[[${isOwner}]]*/ false;
+const canEdit = true;
+    // const canEdit = /*[[${isAdmin}]]*/ false;  // TODO check if admin viewing not is admin's usercard
+    // const isOwner = /*[[${isOwner}]]*/ false;
     const toEditHandler = (e) => {
         console.debug("to edit button pressed");
-        console.debug(isAdmin);
-        console.debug(isOwner);
-        if(!isOwner)
+        console.debug(canEdit);
+        // console.debug(isOwner);
+        if(!canEdit)
             return;
         // enable submit button
         const btn = document.getElementById("form-btn");
-        btn.classList.remove("btn-disabled")
+        btn.classList.remove("btn-hidden")
+        // btn.removeAttribute("disabled");
 
         // disable edit button and enable cancel button
 
         const edit_btn = document.getElementById("edit-btn");
         const cancel_btn = document.getElementById("cancel-btn");
-        edit_btn.classList.add("btn-disabled");
-        cancel_btn.classList.remove("btn-disabled");
+        edit_btn.classList.add("btn-hidden");
+        // btn.addAttribute("disabled");
+        cancel_btn.classList.remove("btn-hidden");
+        // btn.removeAttribute("disabled")
 
         // enable form inputs
-        const toEnable = Array.from(document.getElementsByClassName("input-disabled"));
+        const toEnable = Array.from(document.getElementsByClassName("test-me"));
         console.debug(toEnable);
-        toEnable.forEach((el)=>el.classList.remove("input-disabled"));
+        // toEnable.forEach((el)=>el.classList.remove("input-disabled"));
+        toEnable.forEach((el)=>el.removeAttribute("disabled"));
 
-        if(!isAdmin)
+        if(!canEdit)
             return;
 
         const toEnableAdminOnly = Array.from(document.getElementsByClassName("input-disabled-admin-only"));
@@ -146,7 +151,7 @@ const btnClickHandler = (e) => {
         const btn = document.getElementById("form-btn");
         console.log(btn);
         e.target.textContent = "Another"
-        btn.classList.remove("btn-disabled")
+        btn.classList.remove("btn-hidden")
 
     }
 
