@@ -11,6 +11,7 @@
 </head>
 <body style="padding-top: 0;flex-direction: column;align-items: unset">
 <header th:insert="~{blocks/header :: header}"></header>
+<div th:insert="~{blocks/breadcrumb :: breadcrumb}"/>
 
 <main >
     <div id="container">
@@ -27,11 +28,11 @@
             <div class="list-content ">
                 <div class="row light-row" th:each="section: ${sections}">
                     <div class="id-col" th:text="${section.id}" />
-                    <a class="col-md name-col" th:text="${section.name}" th:href="'/section/' + ${section.id}" />
+                    <a class="col-md name-col" th:text="${section.name}" th:href="'/forum/' + ${section.id}" />
                     <div class="col-lg" th:text="${section.description}" style="border-top: rgb(200, 211, 106) 1px solid;"/>
                 </div>
-                </div>
-            <div class="list-tail row"><pager th:insert="~{blocks/pager :: pager}" /></div>
+            </div>
+            <div class="list-tail row mb-5"><pager th:insert="~{blocks/pager :: pager}" /></div>
         </div>
 
     </div>
