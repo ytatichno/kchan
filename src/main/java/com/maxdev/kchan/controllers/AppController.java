@@ -2,10 +2,7 @@ package com.maxdev.kchan.controllers;
 
 import com.maxdev.kchan.api.ForumApi;
 import com.maxdev.kchan.exceptions.NonUniqueIdentifierException;
-import com.maxdev.kchan.models.Message;
-import com.maxdev.kchan.models.Section;
-import com.maxdev.kchan.models.Topic;
-import com.maxdev.kchan.models.Usercard;
+import com.maxdev.kchan.models.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.ObjectNotFoundException;
@@ -17,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.NoSuchElementException;
 
 /**
@@ -181,6 +180,24 @@ public class AppController {
             return ResponseEntity.ok(api.getMessage(uid));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/message/answer")
+    ResponseEntity<?> postAnswerMessage(@RequestParam(required = true) Integer topic,
+                                        @RequestBody Message message,
+                                        @AuthenticationPrincipal Credential user){
+        message.setUid(-1L);
+        message.setAuthor(user.getUsercard());
+        message.setCreated(Timestamp.from(Instant.now()));
+        Topic minTopic = new Topic();
+        minTopic.setId(topic);
+        message.setTopic(minTopic);
+        try {
+            long assignedId = api.upsertMessage(message);
+            return ResponseEntity.ok("posted answer with id:" + assignedId);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
