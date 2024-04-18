@@ -111,7 +111,7 @@ public class AppController {
     }
 
     @PutMapping("/section/{id}")
-    ResponseEntity<?> putSection(@PathVariable(required = false) Integer id, @RequestParam("section") Section section) {
+    ResponseEntity<?> putSection(@PathVariable(required = false) Integer id, @RequestBody Section section) {
         try {
             if (id != null)
                 section.setId(id);
@@ -148,7 +148,7 @@ public class AppController {
     }
 
     @PutMapping("/topic/{id}")
-    ResponseEntity<?> putTopic(@PathVariable(required = false) Integer id, @RequestParam("topic") Topic topic) {
+    ResponseEntity<?> putTopic(@PathVariable(required = false) Integer id, @RequestBody Topic topic) {
         try {
             if (id != null)
                 topic.setId(id);
@@ -168,7 +168,7 @@ public class AppController {
         }
     }
 
-    @GetMapping("/list/messages")
+    @GetMapping("/list/message")
     ResponseEntity<?> getListOfMessages(@RequestParam("topic") Integer topicId,
                                         @RequestParam("page") Integer page,
                                         @RequestParam("pageSize") Integer pageSize) {
@@ -185,7 +185,7 @@ public class AppController {
     }
 
     @PutMapping("/message/{uid}")
-    ResponseEntity<?> putMessage(@PathVariable(required = false) Long uid, @RequestParam("message") Message message) {
+    ResponseEntity<?> putMessage(@PathVariable(required = false) Long uid, @RequestBody Message message) {
         try {
             if (uid != null)
                 message.setUid(uid);
