@@ -1,0 +1,9 @@
+<div class="ps-3 my-breadcrumb " th:fragment="breadcrumb">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li th:class="'breadcrumb-item ' + ${section == null ? 'breadcrumb-active' : ''}"><a href="/forum">Forum</a></li>
+            <li th:if="${section}" th:class="'breadcrumb-item ' + ${topic == null ? 'breadcrumb-active' : ''}"><a th:href="'/forum/' + ${section.id}" th:text="${section.name}"></a></li>
+            <li th:if="${topic}" th:class="'breadcrumb-item ' + ${topic != null ? 'breadcrumb-active' : ''}" th:text="${topic.name}"></li>
+        </ol>
+    </nav>
+</div>
