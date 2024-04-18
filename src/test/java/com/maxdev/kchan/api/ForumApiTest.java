@@ -1,7 +1,11 @@
 package com.maxdev.kchan.api;
 
 import com.maxdev.kchan.exceptions.NonUniqueIdentifierException;
-import com.maxdev.kchan.models.*;
+import com.maxdev.kchan.models.Message;
+import com.maxdev.kchan.models.Section;
+import com.maxdev.kchan.models.Topic;
+import com.maxdev.kchan.models.Usercard;
+import com.maxdev.kchan.models.enums.MessageStatus;
 import com.maxdev.kchan.repo.MessagesRepository;
 import com.maxdev.kchan.repo.SectionsRepository;
 import com.maxdev.kchan.repo.TopicsRepository;

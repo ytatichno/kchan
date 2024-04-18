@@ -1,5 +1,7 @@
 package com.maxdev.kchan.models;
 
+import com.maxdev.kchan.models.enums.TopicStatus;
+import com.maxdev.kchan.models.enums.TopicStatusConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -26,7 +28,8 @@ public class Topic {
     @ManyToOne
     @JoinColumn(name = "author")
     private Usercard author;
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = TopicStatusConverter.class)
+//    @Enumerated(EnumType.STRING)
     private TopicStatus status;
     @ManyToOne
     @JoinColumn(name = "section", nullable = false)

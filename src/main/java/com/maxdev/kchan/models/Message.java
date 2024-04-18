@@ -1,5 +1,7 @@
 package com.maxdev.kchan.models;
 
+import com.maxdev.kchan.models.enums.MessageStatus;
+import com.maxdev.kchan.models.enums.MessageStatusConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -28,7 +30,7 @@ public class Message {
     private String message;
     @NotNull
     private Timestamp created = Timestamp.from(Instant.now());
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = MessageStatusConverter.class)
     private MessageStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reply")

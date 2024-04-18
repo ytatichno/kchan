@@ -1,4 +1,4 @@
-package com.maxdev.kchan.models;
+package com.maxdev.kchan.models.enums;
 
 /**
  * Created by ytati
@@ -20,5 +20,14 @@ public enum TopicStatus {
 
     public String getInRussian() {
         return inRussian;
+    }
+
+    public static TopicStatus fromString(String text) {
+        for (TopicStatus ts : TopicStatus.values()) {
+            if (ts.inRussian.equalsIgnoreCase(text)) {
+                return ts;
+            }
+        }
+        return null;
     }
 }
