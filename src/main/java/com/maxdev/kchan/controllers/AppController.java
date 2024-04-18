@@ -14,6 +14,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
@@ -65,8 +66,15 @@ public class AppController {
 
     @PutMapping("/usercard/{id}")
     ResponseEntity<?> putUsercard(@PathVariable(required = false) Integer id,
-                                  @RequestParam("usercard") Usercard usercard) {
+                                  @RequestBody Usercard usercard,
+                                  @AuthenticationPrincipal Credential user) {
         try {
+            if(!user.getUsercard().getIsAdmin()){
+                usercard.setIsAdmin(false);
+                usercard.setModerableSections(null);
+                usercard.setMessages(null);
+                usercard.setRegdate(null);
+            }
             if (id != null)
                 usercard.setId(id);
             int assignedId = api.upsertUsercard(usercard);
