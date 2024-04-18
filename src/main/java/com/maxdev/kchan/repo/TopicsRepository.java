@@ -12,4 +12,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface TopicsRepository extends JpaRepository<Topic, Integer> {
     Page<Topic> findAllBySectionId(@NotNull Integer section, Pageable pageable);
+    Long countAllBySectionId(@NotNull Integer section);
 }
