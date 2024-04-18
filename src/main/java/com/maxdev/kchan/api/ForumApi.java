@@ -58,6 +58,10 @@ public class ForumApi {
         return ur.findAll(PageRequest.of(pageNumber, pageSize)).toList();
     }
 
+    public Long countUsercards(){
+        return ur.count();
+    }
+
     public Usercard getUsercard(@NotNull Integer id) {
         return ur.findById(id).orElseThrow();
     }
@@ -102,6 +106,9 @@ public class ForumApi {
             pageSize = 10;
         return sr.findAll(PageRequest.of(pageNumber, pageSize)).toList();
 
+    }
+    public Long countSections(){
+        return sr.count();
     }
 
     public Section getSection(@NotNull Integer id) {
@@ -149,7 +156,12 @@ public class ForumApi {
         ).toList();
 
     }
+    public Long countTopics(@Nullable Integer section){
+        if(section == null)
+            return tr.count();
 
+        return tr.countAllBySectionId(section);
+    }
     public Topic getTopic(@NotNull Integer id) {
         return tr.findById(id).orElseThrow();
     }
@@ -193,7 +205,12 @@ public class ForumApi {
                 PageRequest.of(pageNumber, pageSize)
         ).toList();
     }
+    public Long countMessages(@NotNull Integer topic){
+        if(topic == null)
+            return mr.count();
 
+        return mr.countAllByTopicId(topic);
+    }
     public Message getMessage(@NotNull Long id) {
         return mr.findById(id).orElseThrow();
     }
