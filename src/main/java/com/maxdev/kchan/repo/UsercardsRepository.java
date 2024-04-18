@@ -32,11 +32,17 @@ public interface UsercardsRepository extends JpaRepository<Usercard, Integer> {
             "       SELECT m.author, COUNT(m.author) as activity " +
             "       FROM messages m " +
             "       JOIN topics t ON m.topic = t.id" +
-            "           WHERE t.section = :section" +
+            "       WHERE t.section = :section" +
             "       GROUP BY m.author" +
-            "       ORDER BY activity desc" +
             "       LIMIT :limit OFFSET :offset" +
-            ") as stats(author, activity) ON u.id = stats.author",
+            ") as stats(author, activity) ON u.id = stats.author " +
+            "LEFT JOIN ( " +  // and exclude those already moders
+            "            SELECT moder_id" +
+            "            FROM sections_moders" +
+            "            WHERE section_id = :section" +
+            ") as moders(author) ON u.id = moders.author " +
+            "WHERE moders.author is NULL AND u.is_admin is NOT TRUE " +
+            "ORDER BY activity DESC",
             nativeQuery = true
     )
     List<Map<String, Object>> findAllActiveUsersNative(Integer section, Integer limit, Integer offset);
