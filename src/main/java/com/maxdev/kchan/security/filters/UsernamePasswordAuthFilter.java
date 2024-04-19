@@ -14,16 +14,17 @@ import java.io.IOException;
 /**
  * Created by ytati
  * on 23.03.2024.
+ * @deprecated all logics in /rest/auth/login endpoint
  */
 public class UsernamePasswordAuthFilter extends OncePerRequestFilter {
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().startsWith("/api/auth") && request.getMethod().equals(HttpMethod.POST.toString())) {
+        if (request.getServletPath().startsWith("/rest/auth") && request.getMethod().equals(HttpMethod.POST.toString())) {
 //            CredentialsDto credentialsDto = MAPPER.readValue(request.getInputStream(), CredentialsDto.class);
-            request.getParameter("email");
-            request.getParameter("password");
+//            request.getParameter("email");
+//            request.getParameter("password");
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(request.getParameter("email"), request.getParameter("password")));
         }

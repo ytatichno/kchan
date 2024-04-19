@@ -161,23 +161,26 @@ public class MainController {
     }
 
     @GetMapping("/login")
-    public View login(Model model, @AuthenticationPrincipal Credential user) {
+    public String login(Model model,
+                        @RequestParam(name = "status", required = false) String status,
+                        @AuthenticationPrincipal Credential user) {
         if(user != null)
-            return new RedirectView("/forum");
-
+            return "forward:/forum";
+        if(status != null && !status.isEmpty())
+            model.addAttribute("status", status);
         model.addAttribute("title", "Авторизация");
         model.addAttribute("signup", false);
 
-        return new ThymeleafView("auth");
+        return "auth";
     }
 
     @GetMapping("/signup")
-    public View signup(Model model, @AuthenticationPrincipal Credential user) {
+    public String signup(Model model, @AuthenticationPrincipal Credential user) {
         if(user != null)
-            return new RedirectView("/forum");
+            return "forward:/forum";
 
         model.addAttribute("title", "Регистрация");
         model.addAttribute("signup", true);
-        return new ThymeleafView("auth");
+        return "auth";
     }
 }

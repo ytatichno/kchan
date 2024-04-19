@@ -16,30 +16,22 @@
 <body style="padding-top: 0;flex-direction: column;align-items: unset">
 <header th:insert="~{blocks/header :: header}"></header>
 <main>
-    <form class="w-50 my-form">
+    <form class="w-50 my-form" method="post" th:action="'rest/auth/' + (${signup} ? 'signup' : 'login')">
         <div style="padding: 2rem">
-            <!--      <div class="edit-btn" id="edit-btn">-->
-            <!--        <img onclick="toEditHandler(event)" th:disabled="${!isOwner}" disabled="true"-->
-            <!--             src="https://www.svgrepo.com/show/513824/edit.svg" width="32" height="32"/>-->
-            <!--      </div>-->
-            <!--      <div class="cancel-btn btn-disabled" id="cancel-btn" >-->
-            <!--        <img onclick="cancelEditHandler(event)" th:disabled="${!isOwner}" disabled="true"-->
-            <!--             src="https://www.svgrepo.com/show/513872/x-circle.svg" width="32" height="32"-->
-            <!--        />-->
-            <!--      </div>-->
+
             <div class="mb-3">
                 <label for="login" class="form-label">Login(email)</label>
-                <input type="email" class="form-control" id="login" aria-describedby="loginHelp">
+                <input type="email" name="email" th:class="'form-control ' + (${status == 'wrong'} ? ' is-invalid' : '')" id="login" aria-describedby="loginHelp">
                 <div id="loginHelp" class="form-text">It's unique</div>
             </div>
             <div th:if="${signup}" class="mb-3">
                 <label for="nick" class="form-label">Nickname</label>
-                <input type="text" class="form-control" id="nick" aria-describedby="nickHelp">
+                <input type="text" name="nickname" class="form-control" id="nick" aria-describedby="nickHelp">
                 <div id="nickHelp" class="form-text">It's unique</div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" aria-describedby="passwordHelp">
+                <input type="password" name="pwd" th:class="'form-control ' + (${status == 'wrong'} ? ' is-invalid' : '')" id="password" aria-describedby="passwordHelp">
             </div>
             <div th:if="${signup}" class="mb-3">
                 <label for="passwordRepeat" class="form-label">Repeat your password</label>
@@ -48,7 +40,10 @@
                        onkeypress = "this.onchange(event);"
                        onpaste    = "this.onchange(event);"
                        oninput    = "this.onchange(event);">
-                <div id="passwordHelp" class="form-text red-text btn-disabled">It's unique</div>
+                <div id="passwordHelp" class="form-text red-text btn-hidden">It's unique</div>
+            </div>
+            <div>
+                <input type="hidden" name="httpResponse" value="true">
             </div>
             <div>
                 <a th:href="'/' + (${signup} ? 'login' : 'signup')"
@@ -70,9 +65,9 @@
     const pwdInputHandler = (e) => {
 
         if (passwordRepeat.value.length === 0)
-            passwordHelp.classList.add("btn-disabled");
+            passwordHelp.classList.add("btn-hidden");
         else
-            passwordHelp.classList.remove("btn-disabled");
+            passwordHelp.classList.remove("btn-hidden");
 
         if (passwordInput.value !== passwordRepeat.value) {
             passwordHelp.classList.remove("green-text");

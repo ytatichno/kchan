@@ -13,14 +13,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
@@ -42,47 +47,94 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     private SaltApplier saltApplier;
     private CredentialsService credentialsService;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(UsercardsRepository ur, CredentialsRepository cr, PasswordEncoder passwordEncoder, SaltApplier saltApplier, CredentialsService credentialsService) {
+    public AuthController(UsercardsRepository ur, CredentialsRepository cr, PasswordEncoder passwordEncoder, SaltApplier saltApplier, CredentialsService credentialsService, AuthenticationManager authenticationManager) {
         this.ur = ur;
         this.cr = cr;
         this.passwordEncoder = passwordEncoder;
         this.saltApplier = saltApplier;
         this.credentialsService = credentialsService;
+        this.authenticationManager = authenticationManager;
     }
 
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@AuthenticationPrincipal Credential user,
+    public ResponseEntity<?> login(Credential user,
+                                   @RequestParam(value = "httpResponse", required = false, defaultValue = "false") boolean httpResponse,
                                    HttpServletResponse servletResponse) {
 
-        log.warn("user login: " + user.getUsercard().getNick());
+        try {
+            UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(
+                    user.getEmail(), user.getPwd());
+            Authentication authentication = authenticationManager.authenticate(token);  // throws
+            Cookie authCookie = getAuthCookie((Credential) authentication.getPrincipal());
+            servletResponse.addCookie(authCookie);
 
-        Cookie authCookie = getAuthCookie(user);
+            if(httpResponse){
+                servletResponse.addHeader(HttpHeaders.LOCATION, "/forum");
+                return ResponseEntity.status(HttpStatus.FOUND).build();
+            }
+            return ResponseEntity.ok("Successfully logged in");
 
-        servletResponse.addCookie(authCookie);
+        } catch (AuthenticationException e) {
+            if(httpResponse){
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).header("")
+                servletResponse.addHeader(HttpHeaders.LOCATION, "/login?status=wrong");
+                return ResponseEntity.status(HttpStatus.FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials");
+        }
+//        SecurityContext context = securityContextHolderStrategy.createEmptyContext();
+//        context.setAuthentication(authentication);
+//        securityContextHolderStrategy.setContext(context);
+//        securityContextRepository.saveContext(context, request, response);
 
-        return ResponseEntity.ok("Successfully logged in");
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+
+//        if(user == null){
+//            if(httpResponse){
+////                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).header("")
+//                servletResponse.addHeader(HttpHeaders.LOCATION, "/login?status=wrong");
+//                return ResponseEntity.status(HttpStatus.FOUND).build();
+//            }
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials");
+//        }
+
+//        Cookie authCookie = getAuthCookie(user);
+//
+//        servletResponse.addCookie(authCookie);
+//
+//        return ResponseEntity.ok("Successfully logged in");
     }
 
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@AuthenticationPrincipal Credential user) {
-        log.warn("user logout: " + user.getUsercard().getNick());
+    public ResponseEntity<?> logout(@AuthenticationPrincipal Credential user,
+                                    @RequestParam(value = "httpResponse", required = false, defaultValue = "false") boolean httpResponse) {
+//        log.warn("user logout: " + user.getUsercard().getNick());
 
         SecurityContextHolder.clearContext();
+
+        if(httpResponse)
+            return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/login").build();
+
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody HashMap<String, String> body,
+    public ResponseEntity<?> signup(@RequestParam HashMap<String, String> body,
+                                    @RequestParam(value = "httpResponse", required = false, defaultValue = "false") boolean httpResponse,
                                     HttpServletResponse servletResponse) {
 
         String email = (String) body.get("email");
         String nick = (String) body.get("nickname");
         String pwd = (String) body.get("password");
 
-        log.warn("user signup: " + email + ", " + nick);
+//        log.warn("user signup: " + email + ", " + nick);
 
         if (cr.existsByEmail(email))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already taken");
@@ -111,10 +163,21 @@ public class AuthController {
         );
         // link usercatd to credential
         credential.setUsercard(usercard);
-        cr.save(credential);
+
+        try {
+            cr.save(credential);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
+        }
 
         Cookie authCookie = getAuthCookie(credential);
         servletResponse.addCookie(authCookie);
+
+        if(httpResponse){
+            servletResponse.addHeader(HttpHeaders.LOCATION, "/login");
+            return ResponseEntity.status(HttpStatus.FOUND).build();
+        }
+
         return ResponseEntity.ok("Successfully signed up");
     }
 
