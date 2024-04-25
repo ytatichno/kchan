@@ -112,11 +112,11 @@ public class AuthController {
     }
 
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(@AuthenticationPrincipal Credential user,
-                                    @RequestParam(value = "httpResponse", required = false, defaultValue = "false") boolean httpResponse) {
+    @RequestMapping("/logout")
+    public ResponseEntity<?> logout(@AuthenticationPrincipal String user,
+                                    @RequestParam(value = "httpResponse", required = false, defaultValue = "false") boolean httpResponse,
+                                    HttpServletResponse servletResponse) {
 //        log.warn("user logout: " + user.getUsercard().getNick());
-
         SecurityContextHolder.clearContext();
 
         if(httpResponse)
