@@ -2,6 +2,8 @@ package com.maxdev.kchan.security;
 
 import com.maxdev.kchan.models.Credential;
 import com.maxdev.kchan.repo.CredentialsRepository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -27,12 +30,14 @@ public class CredentialsService implements UserDetailsService {
     private final CredentialsRepository cr;
     private final PasswordEncoder passwordEncoder;
     private final SaltApplier saltApplier;
+    private final SessionFactory sessionFactory;
 
     @Autowired
-    public CredentialsService(CredentialsRepository cr, PasswordEncoder passwordEncoder, SaltApplier saltApplier) {
+    public CredentialsService(CredentialsRepository cr, PasswordEncoder passwordEncoder, SaltApplier saltApplier, SessionFactory sessionFactory) {
         this.cr = cr;
         this.passwordEncoder = passwordEncoder;
         this.saltApplier = saltApplier;
+        this.sessionFactory = sessionFactory;
     }
 
     public Credential authenticate(String email, String password) {
@@ -46,22 +51,32 @@ public class CredentialsService implements UserDetailsService {
         return credential;
     }
 
-    public Credential findByToken(String token) {
+    public Credential findByToken(String token) throws RuntimeException {
         String[] parts = token.split("&");
 
         int userId = Integer.parseInt(parts[0]);
         String email = parts[1];
         String hmac = parts[2];
 
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
         Optional<Credential> response = cr.findCredentialByEmail(email);
         if (response.isEmpty())
             return null;
         Credential credential = response.get();
-
+//        System.out.println(credential.getUsercard().getModerableSections());
+//        Usercard awaitedUsercard = session.get(Usercard.class, credential.getUsercard().getId());
+//        credential.setUsercard(awaitedUsercard);
+//        System.out.println("------ before lazy check");
+//        System.out.println("lazy??" + credential.getUsercard().getModerableSections());
+//        System.out.println("------ after lazy check");
+        session.detach(credential.getUsercard());
+        credential.getUsercard().setModerableSections(Collections.emptySet());
+        session.getTransaction().commit();
+        session.close();
         if (!hmac.equals(calculateHmac(credential)) || userId != credential.getId()) {
             throw new RuntimeException("Invalid Cookie value");
         }
-
         return credential;
     }
 
