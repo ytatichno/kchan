@@ -70,6 +70,7 @@ public class AuthController {
                     user.getEmail(), user.getPwd());
             Authentication authentication = authenticationManager.authenticate(token);  // throws
             Cookie authCookie = getAuthCookie((Credential) authentication.getPrincipal());
+//            Cookie authCookie = getAuthCookie((Credential) authentication.getCredentials());
             servletResponse.addCookie(authCookie);
 
             if(httpResponse){
@@ -118,6 +119,13 @@ public class AuthController {
                                     HttpServletResponse servletResponse) {
 //        log.warn("user logout: " + user.getUsercard().getNick());
         SecurityContextHolder.clearContext();
+
+        Cookie expiredCookie = new Cookie(CookieAuthFilter.AUTH_COOKIE_NAME, "");
+        expiredCookie.setHttpOnly(true);
+        expiredCookie.setSecure(true);
+        expiredCookie.setPath("/");
+        expiredCookie.setMaxAge(0);  // now expired and ruined
+        servletResponse.addCookie(expiredCookie);
 
         if(httpResponse)
             return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/login").build();
