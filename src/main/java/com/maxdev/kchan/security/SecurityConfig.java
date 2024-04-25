@@ -1,27 +1,36 @@
 package com.maxdev.kchan.security;
 
-import com.maxdev.kchan.security.filters.CookieAuthFilter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.authentication.AuthenticationConverter;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created by ytati
@@ -74,8 +83,10 @@ public class SecurityConfig {
 //    UserAuthenticationProvider userAuthenticationProvider;
 
     @Bean
-    public AuthenticationManager authManager(HttpSecurity http, CredentialsService credentialsService) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http, CredentialsService credentialsService) throws Exception {
         authenticationProvider = new UserAuthenticationProvider(credentialsService);
+        ProviderManager manager = new ProviderManager(authenticationProvider);
+        manager.setEraseCredentialsAfterAuthentication(false);
 //        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
 ////        authenticationManagerBuilder.authenticationProvider(authenticationProvider);
 ////        authenticationManagerBuilder.userDetailsService(credentialsService);
@@ -85,13 +96,15 @@ public class SecurityConfig {
 ////                .roles("USER");
 //        return authenticationManagerBuilder.build();
 
-        return new ProviderManager(authenticationProvider);
+        return manager;
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager/*, CredentialsService credentialsService*/) throws Exception {
         PersonalAccountAuthorizationManager<RequestAuthorizationContext> personalAccountAccess = new PersonalAccountAuthorizationManager<>();
         ModeratorAuthorizationManager<RequestAuthorizationContext> moderatorAccess = new ModeratorAuthorizationManager<>();
+
 //        authenticationProvider = new UserAuthenticationProvider(credentialsService);
 //        SecurityContextHolder.getContext()
         http
@@ -102,33 +115,38 @@ public class SecurityConfig {
 //                .addFilterBefore(new UsernamePasswordAuthFilter(), BasicAuthenticationFilter.class)
 //                // attaches filter that sets up AuthenticationToken by cookie
 //                .addFilterBefore(new CookieAuthFilter(), UsernamePasswordAuthFilter.class)
-                .addFilterBefore(new CookieAuthFilter(), BasicAuthenticationFilter.class)
+//                .addFilterBefore(new CookieAuthFilter(authenticationManager), BasicAuthenticationFilter.class)
                 // prevents Security from storing auth data for each authentication
                 .sessionManagement((sessionManagement) ->
                         sessionManagement
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+//                .rememberMe(Customizer.withDefaults()).userDetailsService(authenticationProvider.credentialsService)
 //                .authenticationManager(new ProviderManager(authenticationProvider))
 //                .authenticationProvider(authenticationProvider)
                 // declare logout scenario that deletes auth cookie attached to "/auth/logout"
-                .logout((logout) ->
-                        logout.deleteCookies(CookieAuthFilter.AUTH_COOKIE_NAME)
-                                .logoutUrl("/api/auth/logout")
-                )
+//                .logout((logout) ->
+//                        logout.deleteCookies(CookieAuthFilter.AUTH_COOKIE_NAME)
+//                                .logoutUrl("/api/auth/logout")
+//                )
+//                .authenticationManager(authenticationManager)
+//                .authenticationProvider(authenticationProvider)
                 // set matchers(rules by url patterns) that grants access
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                                 authorizeHttpRequests
+
                                         // html pages BEGIN
                                         .requestMatchers("/forum/**").permitAll()
-                                        .requestMatchers("/rules").permitAll()
+                                        .requestMatchers("/rules").authenticated()
                                         .requestMatchers("/feedback").authenticated()
                                         .requestMatchers("/styles/**").permitAll()
+                                        .requestMatchers("/svg/**").permitAll()
                                         .requestMatchers("/login").permitAll()
                                         .requestMatchers("/signup").permitAll()
                                         // html pages END
                                         // auth endpoints
                                         .requestMatchers("/rest/auth/login").permitAll()
-                                        .requestMatchers("/rest/auth/logout").authenticated()
+                                        .requestMatchers("/rest/auth/logout").permitAll()
                                         .requestMatchers("/rest/auth/signup").permitAll()
                                         // usercard operations BEGIN
                                         .requestMatchers("/rest/list/usercard").hasAuthority("ADMIN")  // TODO test
@@ -161,13 +179,12 @@ public class SecurityConfig {
                                         // all moders constraints checked in controllers
                                         // advanced admin endpoints
                                         .requestMatchers("/swagger-ui/**").permitAll()  // TODO hide under ADMIN
-                                        .requestMatchers("/**").permitAll()  // TODO
+//                                        .requestMatchers("/**").permitAll()  // TODO
                 )
 //                .authenticationProvider(userAuthenticationProvider)
 //                .userDetailsService(credentialsService)
 //                .authenticationProvider(authenticationProvider)
                 // declares unauthenticated redirect to login page
-                .authenticationManager(authenticationManager)
 //                .authenticationProvider(authenticationProvider)
                 .formLogin((formLogin) ->
                         formLogin.loginPage("/login")
@@ -190,7 +207,7 @@ public class SecurityConfig {
 //        return new UserAuthenticationProvider(credentialsService);
 //    }
 
-//    @Bean
+    //    @Bean
 //    public AuthenticationManager authenticationManager(HttpSecurity http, CredentialsService credentialsService) throws Exception {
 //        AuthenticationProvider myAuthenticationProvider = new UserAuthenticationProvider(credentialsService);
 //        AuthenticationManagerBuilder authenticationManagerBuilder =
@@ -205,6 +222,34 @@ public class SecurityConfig {
     @Bean
     SaltApplier saltApplier() {
         return new SimpleSaltApplier();
+    }
+
+    @Autowired
+    public void configure(AuthenticationManagerBuilder builder) {
+        builder.eraseCredentials(false);
+    }
+
+    @Bean
+    AuthenticationConverter authenticationConverter() {
+        return new AuthenticationConverter() {
+            @Override
+            public Authentication convert(HttpServletRequest request) {
+                if (request.getCookies() == null)
+                    return null;
+                Optional<Cookie> cookieAuth = Arrays.stream(request.getCookies())
+                        .filter(cookie -> Objects.equals(cookie.getName(), "auth-cookie")).findFirst();
+
+                return cookieAuth.isEmpty() ? null : new PreAuthenticatedAuthenticationToken(cookieAuth.get().getValue(), null);
+            }
+        };
+    }
+
+    @Bean
+    OncePerRequestFilter authenticationFilter(AuthenticationManager authenticationManager, AuthenticationConverter authenticationConverter) {
+        BasicAuthenticationFilter basicAuthenticationFilter = new BasicAuthenticationFilter(authenticationManager);
+        basicAuthenticationFilter.setAuthenticationConverter(authenticationConverter);
+        basicAuthenticationFilter.afterPropertiesSet();
+        return basicAuthenticationFilter;
     }
 
 }
