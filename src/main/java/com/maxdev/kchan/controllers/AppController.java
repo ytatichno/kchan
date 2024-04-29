@@ -72,7 +72,7 @@ public class AppController {
                 usercard.setIsAdmin(false);
                 usercard.setModerableSections(null);
                 usercard.setMessages(null);
-                usercard.setRegdate(null);
+//                usercard.setRegdate(null);
             }
             if (id != null)
                 usercard.setId(id);
