@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,9 @@ public class AuthController {
     private SaltApplier saltApplier;
     private CredentialsService credentialsService;
     private AuthenticationManager authenticationManager;
+
+    @Value("${security.jwt.token.expiration-seconds}")
+    private int COOKIE_TTL;
 
     @Autowired
     public AuthController(UsercardsRepository ur, CredentialsRepository cr, PasswordEncoder passwordEncoder, SaltApplier saltApplier, CredentialsService credentialsService, AuthenticationManager authenticationManager) {
@@ -140,7 +144,7 @@ public class AuthController {
 
         String email = (String) body.get("email");
         String nick = (String) body.get("nickname");
-        String pwd = (String) body.get("password");
+        String pwd = (String) body.get("pwd");
 
 //        log.warn("user signup: " + email + ", " + nick);
 
@@ -194,7 +198,7 @@ public class AuthController {
         Cookie authCookie = new Cookie(CookieAuthFilter.AUTH_COOKIE_NAME, credentialsService.createToken(user));
         authCookie.setHttpOnly(true);
         authCookie.setSecure(true);
-        authCookie.setMaxAge((int) Duration.of(90, ChronoUnit.SECONDS).toSeconds());
+        authCookie.setMaxAge((int) Duration.of(COOKIE_TTL, ChronoUnit.SECONDS).toSeconds());
         authCookie.setPath("/");
         return authCookie;
     }
