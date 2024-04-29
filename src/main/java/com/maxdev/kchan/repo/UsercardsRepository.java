@@ -34,18 +34,41 @@ public interface UsercardsRepository extends JpaRepository<Usercard, Integer> {
             "       JOIN topics t ON m.topic = t.id" +
             "       WHERE t.section = :section" +
             "       GROUP BY m.author" +
-            "       LIMIT :limit OFFSET :offset" +
+//            "       LIMIT :limit + " +
             ") as stats(author, activity) ON u.id = stats.author " +
             "LEFT JOIN ( " +  // and exclude those already moders
-            "            SELECT moder_id" +
+            "            SELECT moder_id, section_id" +
             "            FROM sections_moders" +
             "            WHERE section_id = :section" +
-            ") as moders(author) ON u.id = moders.author " +
-            "WHERE moders.author is NULL AND u.is_admin is NOT TRUE " +
-            "ORDER BY activity DESC",
+            ") as moders(author, section) ON u.id = moders.author " +
+            "WHERE moders.section is NULL AND u.is_admin is NOT TRUE " +
+            "ORDER BY activity DESC " +
+            "LIMIT :limit OFFSET :offset",
             nativeQuery = true
     )
     List<Map<String, Object>> findAllActiveUsersNative(Integer section, Integer limit, Integer offset);
+
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM usercards u " +
+            "JOIN ( " +
+//            "       SELECT m.author, COUNT(m.author) as activity " +
+            "       SELECT m.author" +
+            "       FROM messages m " +
+            "       JOIN topics t ON m.topic = t.id" +
+            "       WHERE t.section = :section" +
+            "       GROUP BY m.author" +
+//            "       LIMIT :limit OFFSET :offset" +
+            ") as stats(author) ON u.id = stats.author " +
+            "LEFT JOIN ( " +  // and exclude those already moders
+            "            SELECT moder_id" +  // todo add
+            "            FROM sections_moders" +
+            "            WHERE section_id = :section" +
+            ") as moders(author) ON u.id = moders.author " +
+            "WHERE moders.author is NULL AND u.is_admin is NOT TRUE ",  // todo fix
+            nativeQuery = true
+    )
+    List<Map<String, Object>> findAllActiveUsersNative(Integer section, Integer limit, Integer offset);
+    Long countAllActiveUsersNative(Integer section);
 }
 
 
