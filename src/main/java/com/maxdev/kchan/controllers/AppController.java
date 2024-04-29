@@ -278,17 +278,18 @@ public class AppController {
         try {
             api.moveTopic(topicId, sectionId);
             return ResponseEntity.ok("topic(" + topicId + ") move to section(" + sectionId + ")");
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
     @PatchMapping("/message/{uid}/ban")
     ResponseEntity<?> banMessage(@PathVariable(required = true) Long uid,
-                                 @RequestParam(required = false) String replacement){
+                                 @RequestParam(required = false) String replacement) {
         try {
             api.banMessage(uid, replacement);
             return ResponseEntity.ok("message(" + uid + ") ban");
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
