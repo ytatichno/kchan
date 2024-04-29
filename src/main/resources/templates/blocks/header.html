@@ -10,17 +10,23 @@
         <li><a href="/rules" class="nav-link px-2 text-white">Правила</a></li>
         <li><a href="/feedback" class="nav-link px-2 text-white">Фидбек</a></li>
       </ul>
-
-
-      <div class="text-end">
-        <form action="/login">
-          <button type="submit" class="btn btn-outline-light me-2">Login</button>
-        </form>
+      <div th:if="${user != null}" style="display: contents">
+        <div th:text="${user.email}" th:style="${user.usercard.isAdmin ? 'color: gold' : ''}"/>
+        <a href="/rest/auth/logout?httpResponse=true" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+          <img width="40" height="32" th:src="@{/svg/logout-svgrepo-com.svg}"/>
+        </a>
       </div>
-      <div class="text-end">
-        <form action="/signup">
-          <button type="submit" class="btn green-btn me-2 mt-0">Signup</button>
-        </form>
+      <div th:if="${user == null}" style="display: contents">
+        <div class="text-end">
+          <form action="/login">
+            <button type="submit" class="btn btn-outline-light me-2">Login</button>
+          </form>
+        </div>
+        <div class="text-end">
+          <form action="/signup">
+            <button type="submit" class="btn green-btn me-2 mt-0">Signup</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
