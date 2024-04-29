@@ -101,10 +101,10 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager/*, CredentialsService credentialsService*/) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager, OncePerRequestFilter authenticationFilter/*, CredentialsService credentialsService*/) throws Exception {
         PersonalAccountAuthorizationManager<RequestAuthorizationContext> personalAccountAccess = new PersonalAccountAuthorizationManager<>();
         ModeratorAuthorizationManager<RequestAuthorizationContext> moderatorAccess = new ModeratorAuthorizationManager<>();
-
+//        System.out.println(authenticationFilter.getFilterConfig());
 //        authenticationProvider = new UserAuthenticationProvider(credentialsService);
 //        SecurityContextHolder.getContext()
         http
@@ -116,6 +116,7 @@ public class SecurityConfig {
 //                // attaches filter that sets up AuthenticationToken by cookie
 //                .addFilterBefore(new CookieAuthFilter(), UsernamePasswordAuthFilter.class)
 //                .addFilterBefore(new CookieAuthFilter(authenticationManager), BasicAuthenticationFilter.class)
+                .addFilter(authenticationFilter)
                 // prevents Security from storing auth data for each authentication
                 .sessionManagement((sessionManagement) ->
                         sessionManagement
@@ -239,7 +240,9 @@ public class SecurityConfig {
                 Optional<Cookie> cookieAuth = Arrays.stream(request.getCookies())
                         .filter(cookie -> Objects.equals(cookie.getName(), "auth-cookie")).findFirst();
 
-                return cookieAuth.isEmpty() ? null : new PreAuthenticatedAuthenticationToken(cookieAuth.get().getValue(), null);
+                return cookieAuth.isEmpty() ? null : new PreAuthenticatedAuthenticationToken(
+                        cookieAuth.get().getValue(),
+                        null);
             }
         };
     }
