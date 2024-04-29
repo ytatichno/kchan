@@ -144,6 +144,8 @@ public class SecurityConfig {
                                         .requestMatchers("/svg/**").permitAll()
                                         .requestMatchers("/login").permitAll()
                                         .requestMatchers("/signup").permitAll()
+                                        .requestMatchers("/favicon.ico").permitAll()
+                                        .requestMatchers("/u/*").authenticated()
                                         // html pages END
                                         // auth endpoints
                                         .requestMatchers("/rest/auth/login").permitAll()
