@@ -16,7 +16,7 @@
 <main>
     <div id="container">
         <div class="section-card">
-            <form class="my-form-wide row">
+            <form class="my-form-wide row" th:action="'/rest/section/' + ${section.id}" method="post">
                 <div class="pt-1">
                     <div th:if="${canEdit}" class="edit-btn mt-1" id="edit-btn">
                         <img onclick="toEditHandler(event)"  disabled="true"
@@ -29,11 +29,11 @@
                     </div>
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input th:value="${section.name}" value="name" type="text" class="form-control" disabled id="name">
+                        <input th:value="${section.name}" value="name" name="name" type="text" class="form-control" disabled id="name">
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea th:text="${section.description}" type="text" class="form-control" disabled id="description" /> </textarea>
+                        <textarea th:text="${section.description}" name="description" type="text" class="form-control" disabled id="description" /> </textarea>
                     </div>
                 </div>
                 <div th:if="${canEdit}">
@@ -75,6 +75,7 @@
 <script th:inline="javascript">/*<![CDATA[*/
 
 const canEdit = /*[[${canEdit}]]*/ false;
+const sectionId = /*[[${section.id}]]*/ 0;
 
 const toEditHandler = (e) => {
     console.debug("to edit button pressed");
