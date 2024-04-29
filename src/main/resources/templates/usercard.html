@@ -18,36 +18,36 @@
 <!--        <input class="inpu" type="text" name="nick" value="username" th:value="${nick}"/>-->
 <!--    </form>-->
 <!--    HTML-->
-    <form class="w-50 my-form">
+    <form class="w-50 my-form" th:action="'/rest/usercard/' + ${id}" method="post">
         <div style="padding: 2rem">
-            <div class="edit-btn" id="edit-btn">
-                <img onclick="toEditHandler(event)" th:disabled="${!canEdit}" disabled="true"
+            <div class="edit-btn" id="edit-btn" th:if="${canEdit}">
+                <img onclick="toEditHandler(event)" th:disabled="!${canEdit}" disabled="true"
                  src="https://www.svgrepo.com/show/513824/edit.svg" width="32" height="32"/>
             </div>
             <div class="cancel-btn btn-hidden" id="cancel-btn" >
-                <img onclick="cancelEditHandler(event)" th:disabled="${!canEdit}" disabled="true"
+                <img onclick="cancelEditHandler(event)" th:disabled="!${canEdit}" disabled="true"
                      src="https://www.svgrepo.com/show/513872/x-circle.svg" width="32" height="32"
                      />
             </div>
             <div class="mb-3">
                 <label for="nick" class="form-label">Nickname</label>
-                <input th:value="${nick}" value="username" type="text" class="form-control test-me" disabled id="nick" aria-describedby="nickHelp">
+                <input th:value="${user.nick}" value="username" name="nick" type="text" class="form-control test-me" disabled id="nick" aria-describedby="nickHelp">
                 <div id="nickHelp" class="form-text">It's unique</div>
             </div>
             <div class="mb-3">
                 <label for="about" class="form-label">About</label>
-                <textarea th:value="${about}" type="text" class="form-control input-disabled" id="about" > </textarea>  <!--TODO th:value to th:text-->
+                <textarea th:text="${user.about}" name="about" type="text" class="form-control  test-me" disabled id="about" > </textarea>  <!--TODO th:value to th:text-->
             </div>
             <div class="mb-3">
                 <label for="birthday" class="form-label">Birthday</label>
-                <input th:value="${birthday}" type="date" class="form-control input-disabled" id="birthday">
+                <input th:value="${user.birthday}" name="birthday" type="date" class="form-control test-me" disabled id="birthday">
             </div>
             <div class="mb-3">
                 <label for="regdate" class="form-label">Regdate</label>
-                <input th:value="${regdate}" type="date" class="form-control input-disabled-admin-only" id="regdate">
+                <input th:value="${user.regdate}" name="regdate" type="date" class="form-control input-disabled-admin-only" disabled id="regdate">
             </div>
             <div class="mb-3 form-check">
-                <input th:value="${canEdit}" type="checkbox" class="form-check-input" id="isAdmin" disabled>
+                <input th:value="${user.isAdmin}" name="canEdit" type="checkbox" class="form-check-input input-disabled-admin-only" id="isAdmin" disabled>
                 <label class="form-check-label" for="isAdmin">Is admin</label>
             </div>
         </div>
@@ -84,9 +84,9 @@
 
 </body>
 <script th:inline="javascript">/*<![CDATA[*/
-const canEdit = true;
-    // const canEdit = /*[[${isAdmin}]]*/ false;  // TODO check if admin viewing not is admin's usercard
-    // const isOwner = /*[[${isOwner}]]*/ false;
+// const canEdit = true;
+    const canEdit = /*[[${canEdit}]]*/ false;  // TODO check if admin viewing not is admin's usercard
+    const isAdminWatching = /*[[${isAdminWatching}]]*/ false;
     const toEditHandler = (e) => {
         console.debug("to edit button pressed");
         console.debug(canEdit);
@@ -113,12 +113,15 @@ const canEdit = true;
         // toEnable.forEach((el)=>el.classList.remove("input-disabled"));
         toEnable.forEach((el)=>el.removeAttribute("disabled"));
 
-        if(!canEdit)
+        if(!isAdminWatching)
             return;
 
         const toEnableAdminOnly = Array.from(document.getElementsByClassName("input-disabled-admin-only"));
         console.debug(toEnableAdminOnly);
-        toEnableAdminOnly.forEach((el)=>el.classList.remove("input-disabled-admin-only"));
+        toEnableAdminOnly.forEach((el)=>{
+            el.classList.remove("input-disabled-admin-only");
+            el.removeAttribute("disabled");
+        });
     }
 /**
  * handle when user wants to go from Usercard editing, to Usecard viewing or cancel changes
