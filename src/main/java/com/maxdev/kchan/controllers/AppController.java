@@ -76,6 +76,8 @@ public class AppController {
             }
             if (id != null)
                 usercard.setId(id);
+            if(usercard.getMessages() == null)
+                usercard.setMessages(0);
             int assignedId = api.upsertUsercard(usercard);
             return ResponseEntity.ok("upserted usercard with id:" + assignedId);
         } catch (ObjectNotFoundException e) {
