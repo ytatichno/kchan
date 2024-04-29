@@ -163,8 +163,8 @@ public class SecurityConfig {
                                         // section operations BEGIN
                                         .requestMatchers("/rest/list/section").permitAll()
                                         .requestMatchers(HttpMethod.GET, "/rest/section/*").permitAll()
-//                                .requestMatchers(HttpMethod.PUT, "/rest/section/*").hasAuthority("ADMIN")  // TODO enable
-//                                .requestMatchers(HttpMethod.POST, "/rest/section/*").hasAuthority("ADMIN")
+                                        .requestMatchers(HttpMethod.PUT, "/rest/section/*").hasAuthority("ADMIN")
+                                        .requestMatchers(HttpMethod.POST, "/rest/section/*").hasAuthority("ADMIN")
                                         .requestMatchers(HttpMethod.DELETE, "/rest/section/*").denyAll()
                                         // section operations END
                                         // topic operations BEGIN some check in controller
