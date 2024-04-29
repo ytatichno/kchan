@@ -48,25 +48,42 @@
         <div class="list">
             <div class="list-head row">
                 <div class="col-head" style="width: 5%; border-right: 1px solid white">#</div>
-                <div class="col-4 col-head">author</div>
+                <div class="col-3 col-head">author</div>
                 <div class="col-6 col-head">message</div>
                 <div class="col-sm ">created</div>
+                <div th:if="${canEdit}" class="col-sm-1 ">actions</div>
 
             </div>
             <div class="list-content ">
                 <div class="row light-row" th:each="message: ${messages}">
-                    <div class="id-col" th:text="${message.uid}" />
-                    <a class="col-4 name-col" th:text="${message.author.nick}" th:href="'/topic/' + ${topic.id}" />
-                    <div class="col-6 name-col" th:text="${message.message}" style="border-top: rgb(200, 211, 106) 1px solid;"/>
-                    <div class="col-sm" th:text="${topic.created}"/>
+                    <div class="id-col" th:text="${message.uid}"/>
+                    <div class="col-3 name-col">
+                        <a style="font-weight: bold;font-size: large;"
+                           th:text="${message.author.nick}" th:href="'/u/' + ${message.author.id}"></a>
+                        <div th:text="'messages: ' + ${message.author.messages}"></div>
+                        <div th:text="'registrated: ' + ${message.author.regdate}"></div>
+                    </div>
+<!--                    <a class="col-3 name-col" th:text="${message.author.nick}" th:href="'/u/' + ${message.author.id}"/>-->
+
+                    <div class="col-6 name-col" th:text="${message.message}"
+                         style="border-top: rgb(200, 211, 106) 1px solid; overflow-wrap: break-word;"/>
+                    <div class="col-sm name-col" th:text="${message.created}"/>
+<!--                    <div th:if="${canEdit}" class="col-sm-1 name-col">-->
+<!--                        <a class="btn align-items-center mb-2 mb-lg-0"-->
+<!--                           data-toggle="tooltip" data-placement="top" title="ban message"-->
+<!--                           th:onclick="'banMessage(' + ${message.uid} + ')'">-->
+<!--                            <img src="https://www.svgrepo.com/show/371056/ban.svg" width="32" height="32"/>-->
+<!--                        </a>-->
+<!--                    </div>-->
+
                 </div>
             </div>
             <div class="list-tail row mb-5"><pager th:insert="~{blocks/pager :: pager}" /></div>
             <a th:if="${totalPages-1 == pageNumber}" href="#ans" >
-                <form id="messageForm" action="/rest/message/answer" method="post">
+                <form class="mb-5" id="messageForm" th:action="'/rest/message/answer?topic=' + ${topic.id}" method="post">
                     <label for="message" th:text="'Enter your answer to ' + ${topic.name}">Enter your answer to:</label><br>
                     <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
-                    <input type="submit" value="Send Message">
+                    <input class="btn green-btn me-2 mt-0" type="submit" value="Send Message">
                 </form>
             </a>
         </div>
@@ -122,6 +139,21 @@ const returnToEditHandler = (e) =>{
 }
 
 
+const banMessage = (uid) => {
+    console.debug(uid);
+    fetch("/rest/message/" + uid + "/ban" , {
+        method: "PATCH",
+    })
+        .then((response) => {
+            console.log(response);
+            location.reload();
+            // location.reload();
+        })
+        .catch((response) => {
+            console.error(response);
+            // window.alert(response)
+        })
+}
 
 /*]]>*/</script>
 <!--<style>-->
