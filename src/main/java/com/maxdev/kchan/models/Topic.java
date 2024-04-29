@@ -1,10 +1,11 @@
 package com.maxdev.kchan.models;
 
 import com.maxdev.kchan.models.enums.TopicStatus;
-import com.maxdev.kchan.models.enums.TopicStatusConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -28,8 +29,8 @@ public class Topic {
     @ManyToOne
     @JoinColumn(name = "author")
     private Usercard author;
-    @Convert(converter = TopicStatusConverter.class)
-//    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private TopicStatus status;
     @ManyToOne
     @JoinColumn(name = "section", nullable = false)

@@ -41,7 +41,7 @@ CREATE TABLE sections(
   created date default current_date
 );
 
-CREATE TYPE topic_status AS ENUM ('Обычная', 'Свежая', 'Пассивная', 'Активная', 'Переехала');
+CREATE TYPE topic_status AS ENUM ('CASUAL', 'NEW', 'PASSIVE', 'ACTIVE', 'MOVED');
 
 CREATE TABLE topics(
   id serial primary key,
@@ -53,7 +53,7 @@ CREATE TABLE topics(
   section integer not null references sections(id)
 );
 
-CREATE TYPE message_status AS ENUM ('Обычное', 'VIP', 'Забаненное', 'Уведомление');
+CREATE TYPE message_status AS ENUM ('CASUAL', 'VIP', 'BANNED', 'NOTIFICATION');
 
 CREATE TABLE messages(
   uid bigserial primary key,
@@ -66,9 +66,9 @@ CREATE TABLE messages(
 );
 
 CREATE TABLE sections_moders(
-  section_id integer not null,
-  moder_id integer not null,
-  asigner_id integer references usercards(id),
+  section_id integer not null references sections(id),
+  moder_id integer not null references usercards(id),
+  asigner_id integer null references usercards(id),
   asigned date null default CURRENT_DATE,
   primary key(section_id, moder_id)
 );
@@ -116,17 +116,17 @@ VALUES
 INSERT INTO topics (name, description, status, section)
 VALUES
 ('Расписание пар и полезные ссылки ВМК', 'Расписание есть на сайте факультета: https://cs.msu.ru/vesna2024.pdf',
-'Обычная', (SELECT id from sections where name = 'Подслушано ВМК')),
+'CASUAL', (SELECT id from sections where name = 'Подслушано ВМК')),
 ('Расписание пар и полезные ссылки МехМат', 'Расписание есть на сайте факультета: https://math.msu.ru/vesna2024.pdf',
-'Обычная', (SELECT id from sections where name = 'Подслушано МехМат')),
+'CASUAL', (SELECT id from sections where name = 'Подслушано МехМат')),
 ('Расписание пар и полезные ссылки ФизФак', 'Расписание есть на сайте факультета: https://phys.msu.ru/vesna2024.pdf',
-'Обычная', (SELECT id from sections where name = 'Подслушано ФизФак')),
+'CASUAL', (SELECT id from sections where name = 'Подслушано ФизФак')),
 ('Расписание пар и полезные ссылки ФКИ', 'Расписание есть на сайте факультета: https://astro.msu.ru/vesna2024.pdf',
-'Обычная', (SELECT id from sections where name = 'Подслушано ФКИ')),
+'CASUAL', (SELECT id from sections where name = 'Подслушано ФКИ')),
 ('Расписание пар и полезные ссылки ИСП', 'Расписание есть на сайте института: https://isp.ras.ru/vesna2024.pdf',
-'Обычная', (SELECT id from sections where name = 'Подслушано ИСП')),
+'CASUAL', (SELECT id from sections where name = 'Подслушано ИСП')),
 ('Расписание пар и полезные ссылки ИПМ', 'Расписание есть на сайте института: https://keldysh.ras.ru/vesna2024.pdf',
-'Обычная', (SELECT id from sections where name = 'Подслушано ИПМ'));
+'CASUAL', (SELECT id from sections where name = 'Подслушано ИПМ'));
 
 INSERT INTO sections_moders(section_id, moder_id, asigner_id, asigned)
 VALUES
@@ -163,91 +163,91 @@ INSERT INTO messages(topic, author, status, message)
 VALUES
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'admin'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал ставить англ первой парой?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient2'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал ставить линал после обеда?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient3'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал матан две пары подряд ставтить?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient4'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал ставить русский первой парой в суботу?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient5'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал хадить на руский на ВМК?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ФКИ'),
  (SELECT id from usercards where nick = 'ancient6'),
- 'Обычное',
+ 'CASUAL',
  'Где искать П12? Подскажите! Пара через 5 мин'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient7'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал пары?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient8'),
- 'Обычное',
+ 'CASUAL',
  'Пары не удары можно пропустить😎'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки МехМат'),
  (SELECT id from usercards where nick = 'ancient9'),
- 'Обычное',
+ 'CASUAL',
  '😂😂🤣'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient3'),
- 'Обычное',
+ 'CASUAL',
  'Лучше пальцем чистить фары, чем сидеть 4 пары'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient2'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал матан?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient2'),
- 'Обычное',
+ 'CASUAL',
  'Коши'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки МехМат'),
  (SELECT id from usercards where nick = 'ancient3'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал ставить АнГем 5ой парой?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки МехМат'),
  (SELECT id from usercards where nick = 'ancient4'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал теорию чисел на 1ом курсе?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient5'),
- 'Обычное',
+ 'CASUAL',
  'Кот🙀'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ФизФак'),
  (SELECT id from usercards where nick = 'ancient6'),
- 'Обычное',
+ 'CASUAL',
  'Обновите ссылку! Эта не актуальна'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient7'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал ставить парой?'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки МехМат'),
  (SELECT id from usercards where nick = 'ancient8'),
- 'Обычное',
+ 'CASUAL',
  'МехМатушка!'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки МехМат'),
  (SELECT id from usercards where nick = 'ancient8'),
- 'Обычное',
+ 'CASUAL',
  'Коши! - не души🙏'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ВМК'),
  (SELECT id from usercards where nick = 'ancient9'),
- 'Обычное',
+ 'CASUAL',
  'Кто придумал выкладывать расписание в pdf'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ФКИ'),
  (SELECT id from usercards where nick = 'internet_shark01'),
- 'Обычное',
+ 'CASUAL',
  'АУ!'),
 ((SELECT id from topics where name = 'Расписание пар и полезные ссылки ФКИ'),
  (SELECT id from usercards where nick = 'admin'),
- 'Обычное',
+ 'CASUAL',
  'Ау-Ау-Ау');
 
 

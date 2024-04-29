@@ -1,10 +1,11 @@
 package com.maxdev.kchan.models;
 
 import com.maxdev.kchan.models.enums.MessageStatus;
-import com.maxdev.kchan.models.enums.MessageStatusConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -30,7 +31,8 @@ public class Message {
     private String message;
     @NotNull
     private Timestamp created = Timestamp.from(Instant.now());
-    @Convert(converter = MessageStatusConverter.class)
+    @Column(name = "status")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private MessageStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reply")

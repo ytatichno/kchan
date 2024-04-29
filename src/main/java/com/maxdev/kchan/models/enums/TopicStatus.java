@@ -6,28 +6,10 @@ package com.maxdev.kchan.models.enums;
  */
 
 public enum TopicStatus {
-    CASUAL("Обычная"),
-    NEW("Свежая"),
-    PASSIVE("Пассивная"),
-    ACTIVE("Активная"),
-    MOVED("Переехала");
+    CASUAL,
+    NEW,
+    PASSIVE,
+    ACTIVE,
+    MOVED;
 
-    private final String inRussian;
-
-    TopicStatus(String inRussian) {
-        this.inRussian = inRussian;
-    }
-
-    public String getInRussian() {
-        return inRussian;
-    }
-
-    public static TopicStatus fromString(String text) {
-        for (TopicStatus ts : TopicStatus.values()) {
-            if (ts.inRussian.equalsIgnoreCase(text)) {
-                return ts;
-            }
-        }
-        return null;
-    }
 }
