@@ -39,13 +39,15 @@ public class Usercard {
     @Min(value = 0)
     private Integer messages = 0;
     @ManyToMany
-    @JoinTable(name = "sections_moders",
+    @JoinTable(name="sections_moders",
             joinColumns = @JoinColumn(
                     name = "moder_id",
+                    referencedColumnName = "id",
                     nullable = false
             ),
             inverseJoinColumns = @JoinColumn(
                     name = "section_id",
+                    referencedColumnName = "id",
                     nullable = false
             )
     )
@@ -59,6 +61,7 @@ public class Usercard {
         regdate = (Date) tupleToExtractFrom.get("regdate");
         isAdmin = (Boolean) tupleToExtractFrom.get("is_admin");
         messages = (Integer) tupleToExtractFrom.get("messages");
+//        moderableSections = (Set<Section>) tupleToExtractFrom.get("moderableSections");
     }
 
     public Map<String, Object> toMap() {
@@ -70,6 +73,7 @@ public class Usercard {
         m.put("regdate", regdate);
         m.put("is_admin", isAdmin);
         m.put("messages", messages);
+//        m.put("moderableSections", moderableSections);
         return m;
     }
 }
