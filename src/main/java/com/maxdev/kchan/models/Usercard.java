@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +54,18 @@ public class Usercard {
             )
     )
     private Set<Section> moderableSections;
+
+    public void setBirthday(String str) throws ParseException {
+        if(str == null || str.isBlank()) {
+            this.birthday = null;
+            return;
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date d = null;
+        d = format.parse(str);
+
+        this.birthday = new java.sql.Date(d.getTime());
+    }
 
     public Usercard(Map<String, Object> tupleToExtractFrom) {
         id = (Integer) tupleToExtractFrom.get("id");
