@@ -79,7 +79,7 @@
                 </div>
             </div>
             <div class="list-tail row mb-5"><pager th:insert="~{blocks/pager :: pager}" /></div>
-            <a th:if="${totalPages-1 == pageNumber}" href="#ans" >
+            <a th:if="${totalPages-1 == pageNumber}" href="#ans" id="ans">
                 <form class="mb-5" id="messageForm" th:action="'/rest/message/answer?topic=' + ${topic.id}" method="post">
                     <label for="message" th:text="'Enter your answer to ' + ${topic.name}">Enter your answer to:</label><br>
                     <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
@@ -94,6 +94,12 @@
 </main>
 
 </body>
+<script th:if="${totalPages-1 == pageNumber}" th:inline="javascript">/*<![CDATA[*/
+const answerAnchor = document.getElementById("ans");
+if(!!location.hash && location.hash == "#ans")
+    answerAnchor.scrollIntoView();
+/*]]>*/</script>
+
 <script th:inline="javascript">/*<![CDATA[*/
 
 const canEdit = /*[[${canEdit}]]*/ false;
