@@ -187,18 +187,21 @@ public class AppController {
 
     @PostMapping("/message/answer")
     ResponseEntity<?> postAnswerMessage(@RequestParam(required = true) Integer topic,
-                                        @RequestBody Message message,
-                                        @AuthenticationPrincipal Credential user){
-        message.setUid(-1L);
-        message.setAuthor(user.getUsercard());
-        message.setCreated(Timestamp.from(Instant.now()));
+                                        String message,
+                                        @AuthenticationPrincipal Credential user) {
+        Message answer = new Message(message);
+        answer.setUid(-1L);
+        answer.setAuthor(user.getUsercard());
+        answer.setCreated(Timestamp.from(Instant.now()));
         Topic minTopic = new Topic();
         minTopic.setId(topic);
-        message.setTopic(minTopic);
+        answer.setTopic(minTopic);
         try {
-            long assignedId = api.upsertMessage(message);
-            return ResponseEntity.ok("posted answer with id:" + assignedId);
-        } catch (Exception e){
+            long assignedId = api.upsertMessage(answer);
+            user.getUsercard().setMessages(user.getUsercard().getMessages() + 1);
+            api.upsertUsercard(user.getUsercard());
+            return ResponseEntity.ok("posted answer with uid:" + assignedId);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
