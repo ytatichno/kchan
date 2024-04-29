@@ -65,10 +65,10 @@ public class AppController {
 
     @RequestMapping(value = "/usercard/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
     ResponseEntity<?> putUsercard(@PathVariable(required = false) Integer id,
-                                  @RequestBody Usercard usercard,
+                                  Usercard usercard,
                                   @AuthenticationPrincipal Credential user) {
         try {
-            if(!user.getUsercard().getIsAdmin()){
+            if (!user.getUsercard().getIsAdmin()) {
                 usercard.setIsAdmin(false);
                 usercard.setModerableSections(null);
                 usercard.setMessages(null);
