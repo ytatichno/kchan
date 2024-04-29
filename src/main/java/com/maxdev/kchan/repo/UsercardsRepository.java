@@ -67,8 +67,31 @@ public interface UsercardsRepository extends JpaRepository<Usercard, Integer> {
             "WHERE moders.author is NULL AND u.is_admin is NOT TRUE ",  // todo fix
             nativeQuery = true
     )
-    List<Map<String, Object>> findAllActiveUsersNative(Integer section, Integer limit, Integer offset);
     Long countAllActiveUsersNative(Integer section);
+
+    @Query(value = """
+            SELECT * 
+            FROM usercards u  
+            JOIN (  
+                   SELECT sm.moder_id  
+                   FROM sections_moders sm  
+                   WHERE sm.section_id = :section 
+                   LIMIT :limit OFFSET :offset  
+            ) as moders(moder_id) ON u.id = moders.moder_id  
+            """,
+            nativeQuery = true
+    )
+    List<Usercard> findModersNative(Integer section, Integer limit, Integer offset);
+
+    @Query(value = """
+            DELETE
+            FROM sections_moders sm
+            WHERE sm.section_id = :moderable AND sm.moder_id = :toDisrank
+            RETURNING *
+        """,
+            nativeQuery = true
+    )
+    Object disrankModer(Integer moderable, Integer toDisrank);
 }
 
 
