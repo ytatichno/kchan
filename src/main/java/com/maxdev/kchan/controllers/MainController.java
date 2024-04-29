@@ -190,7 +190,7 @@ public class MainController {
         model.addAttribute("title", usercard.getNick());
 //        model.addAttribute("user", extractEmail((String) auth.getPrincipal()));
         model.addAttribute("user", user);
-
+        model.addAttribute("usercard", usercard);
 //        model.addAttribute("id", usercard.getId());
 //        model.addAttribute("nick", usercard.getNick());
 //        model.addAttribute("about", usercard.getAbout());
