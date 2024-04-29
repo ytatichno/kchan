@@ -63,7 +63,7 @@ public class AppController {
         }
     }
 
-    @PutMapping("/usercard/{id}")
+    @RequestMapping(value = "/usercard/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
     ResponseEntity<?> putUsercard(@PathVariable(required = false) Integer id,
                                   @RequestBody Usercard usercard,
                                   @AuthenticationPrincipal Credential user) {
@@ -109,8 +109,8 @@ public class AppController {
         }
     }
 
-    @PutMapping("/section/{id}")
-    ResponseEntity<?> putSection(@PathVariable(required = false) Integer id, @RequestBody Section section) {
+    @RequestMapping(value = "/section/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
+    ResponseEntity<?> putSection(@PathVariable(required = false) Integer id, Section section) {
         try {
             if (id != null)
                 section.setId(id);
@@ -146,8 +146,8 @@ public class AppController {
         }
     }
 
-    @PutMapping("/topic/{id}")
-    ResponseEntity<?> putTopic(@PathVariable(required = false) Integer id, @RequestBody Topic topic) {
+    @RequestMapping(value = "/topic/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
+    ResponseEntity<?> putTopic(@PathVariable(required = false) Integer id, Topic topic) {
         try {
             if (id != null)
                 topic.setId(id);
@@ -201,7 +201,7 @@ public class AppController {
         }
     }
 
-    @PutMapping("/message/{uid}")
+    @RequestMapping(value = "/message/{uid}", method = {RequestMethod.PUT, RequestMethod.POST})
     ResponseEntity<?> putMessage(@PathVariable(required = false) Long uid, @RequestBody Message message) {
         try {
             if (uid != null)
