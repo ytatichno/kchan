@@ -154,7 +154,9 @@ public class SecurityConfig {
                                         // usercard operations BEGIN
                                         .requestMatchers("/rest/list/usercard").hasAuthority("ADMIN")  // TODO test
                                         .requestMatchers(HttpMethod.GET, "/rest/usercard/*").authenticated()
-                                        .requestMatchers(HttpMethod.PUT, "/rest/usercard/*").access(personalAccountAccess)  // TODO protect some fields
+                                        .requestMatchers(HttpMethod.PUT, "/rest/usercard/*").authenticated()
+                                        .requestMatchers(HttpMethod.POST, "/rest/usercard/*").authenticated()
+//                                        .requestMatchers(HttpMethod.PUT, "/rest/usercard/*").access(personalAccountAccess)  // TODO protect some fields
 //                                .requestMatchers(HttpMethod.POST, "/rest/usercard/*").hasAuthority("ADMIN")
                                         .requestMatchers(HttpMethod.DELETE, "/rest/usercard/*").denyAll()
                                         // usercard operations END
