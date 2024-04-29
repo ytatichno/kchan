@@ -27,6 +27,10 @@ public class Section {
     @ManyToMany(mappedBy = "moderableSections")
     private Set<Usercard> moders;
 
+    public int countModers(){
+        return moders.size();
+    }
+
 //    private void setId(Integer id){
 //        this.id = id;
 //    }
