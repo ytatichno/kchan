@@ -17,7 +17,7 @@
     <div id="container">
 <!--        <img id="image" width="100%" height="auto" src="/images/bg.jpeg" />-->
         <div class="greeting">
-            <h2>Привет</h2>
+            <h2 th:text="'Привет ' + ${user != null ? user.usercard.nick : ''}"/>
         </div>
         <div class="list">
             <div class="list-head row">
