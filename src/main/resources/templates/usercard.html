@@ -31,23 +31,24 @@
             </div>
             <div class="mb-3">
                 <label for="nick" class="form-label">Nickname</label>
-                <input th:value="${user.nick}" value="username" name="nick" type="text" class="form-control test-me" disabled id="nick" aria-describedby="nickHelp">
+                <input th:value="${usercard.nick}" value="username" name="nick" type="text" class="form-control test-me" disabled id="nick" aria-describedby="nickHelp">
                 <div id="nickHelp" class="form-text">It's unique</div>
             </div>
             <div class="mb-3">
                 <label for="about" class="form-label">About</label>
-                <textarea th:text="${user.about}" name="about" type="text" class="form-control  test-me" disabled id="about" > </textarea>  <!--TODO th:value to th:text-->
+                <textarea th:text="${usercard.about}" name="about" type="text" class="form-control  test-me" disabled id="about" > </textarea>  <!--TODO th:value to th:text-->
             </div>
+
             <div class="mb-3">
                 <label for="birthday" class="form-label">Birthday</label>
-                <input th:value="${user.birthday}" name="birthday" type="date" class="form-control test-me" disabled id="birthday">
+                <input th:value="${usercard.birthday}" name="birthday" type="date" class="form-control test-me" disabled id="birthday">
             </div>
             <div class="mb-3">
                 <label for="regdate" class="form-label">Regdate</label>
-                <input th:value="${user.regdate}" name="regdate" type="date" class="form-control input-disabled-admin-only" disabled id="regdate">
+                <input th:value="${usercard.regdate}" name="regdate" type="date" class="form-control input-disabled-admin-only" disabled id="regdate">
             </div>
             <div class="mb-3 form-check">
-                <input th:value="${user.isAdmin}" name="canEdit" type="checkbox" class="form-check-input input-disabled-admin-only" id="isAdmin" disabled>
+                <input th:value="${usercard.isAdmin}" name="canEdit" type="checkbox" class="form-check-input input-disabled-admin-only" id="isAdmin" disabled>
                 <label class="form-check-label" for="isAdmin">Is admin</label>
             </div>
         </div>
