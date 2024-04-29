@@ -37,8 +37,8 @@
                     </div>
                 </div>
                 <div th:if="${canEdit}">
-                    <button class="btn btn-light mt-1 bordered-btn me-2">Moders</button>
-                    <button class="btn btn-light mt-1 bordered-btn me-2">ActiveUsers</button>
+                    <a class="btn btn-light mt-1 bordered-btn me-2" th:href="'/forum/' + ${section.id} + '/moders'">Moders</a>
+                    <a class="btn btn-light mt-1 bordered-btn me-2" th:href="'/forum/' + ${section.id} + '/users'">ActiveUsers</a>
                 </div>
                 <div class="row m-a mb-3">
                     <button id="form-btn" class="my-btn green-btn btn-hidden">Submit</button>
