@@ -23,7 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -58,7 +59,7 @@ public class ForumApi {
         return ur.findAll(PageRequest.of(pageNumber, pageSize)).toList();
     }
 
-    public Long countUsercards(){
+    public Long countUsercards() {
         return ur.count();
     }
 
@@ -107,7 +108,8 @@ public class ForumApi {
         return sr.findAll(PageRequest.of(pageNumber, pageSize)).toList();
 
     }
-    public Long countSections(){
+
+    public Long countSections() {
         return sr.count();
     }
 
@@ -156,12 +158,14 @@ public class ForumApi {
         ).toList();
 
     }
-    public Long countTopics(@Nullable Integer section){
-        if(section == null)
+
+    public Long countTopics(@Nullable Integer section) {
+        if (section == null)
             return tr.count();
 
         return tr.countAllBySectionId(section);
     }
+
     public Topic getTopic(@NotNull Integer id) {
         return tr.findById(id).orElseThrow();
     }
@@ -205,29 +209,32 @@ public class ForumApi {
                 PageRequest.of(pageNumber, pageSize)
         ).toList();
     }
-    public Long countMessages(@NotNull Integer topic){
-        if(topic == null)
+
+    public Long countMessages(@NotNull Integer topic) {
+        if (topic == null)
             return mr.count();
 
         return mr.countAllByTopicId(topic);
     }
+
     public Message getMessage(@NotNull Long id) {
         return mr.findById(id).orElseThrow();
     }
 
     public long upsertMessage(@NotNull Message message) {
+        Message saved = null;
         if (message.getUid() == null || message.getUid() < 0) {  // insert
-            mr.save(message);
-            log.debug("insert message with id" + message.getUid());
+            saved = mr.save(message);
+            log.debug("insert message with uid" + saved.getUid());
         } else {  // update
             if (!mr.existsById(message.getUid())) {
                 throw new ObjectNotFoundException(message.getUid(),
                         "Message");
             }
-            mr.save(message);
-            log.debug("update message with id" + message.getUid());
+            saved = mr.save(message);
+            log.debug("update message with uid" + saved.getUid());
         }
-        return message.getUid();
+        return saved.getUid();
     }
 
     public Message deleteMessage(@NotNull Long id) {
@@ -260,52 +267,42 @@ public class ForumApi {
                 .toList();
     }
 
-    public List<Usercard> getModersOfSection(@NotNull Integer section,
-                                             @Nullable Integer pageNumber,
-                                             @Nullable Integer pageSize) {
-        if (pageNumber == null)
-            pageNumber = 0;
-        if (pageSize == null)
-            pageSize = 10;
-
-        Optional<Section> modearable = sr.findById(section);
-        if (modearable.isEmpty())
-            return Collections.emptyList();
-        Set<Usercard> moders = modearable.get().getModers();
-        if (moders == null)
-            return Collections.emptyList();
-        return Utils.extractPageFromList(
-                PageRequest.of(pageNumber, pageSize),
-                moders.stream().toList()
-        ).toList();
+    public Long countActiveUsercards(@NotNull Integer section) {
+        return ur.countAllActiveUsersNative(section);
     }
+
+    public List<Usercard> getModersOfSection(
+            @NotNull Integer section,
+            @Nullable Integer pageNumber,
+            @Nullable Integer pageSize
+    ) {
+        List<Usercard> moders;
+        if (pageNumber == null || pageSize == null)
+            moders = ur.findModersNative(section, 10, 0);
+        else
+            moders = ur.findModersNative(section, pageSize,
+                    pageSize * pageNumber);
+
+        return moders;
+    }
+
 
     public void assignModerOfSection(@NotNull Integer usercard,
                                      @NotNull Integer section) {
         Usercard moder = ur.findById(usercard).orElseThrow();
         Section moderable = sr.findById(section).orElseThrow();
-//        List<Usercard> newModersList = new ArrayList<>(moderable.getModers());
-//        newModersList.add(moder);
-//        moderable.setModers(newModersList);
-        moderable.getModers().add(moder);
-        sr.save(moderable);
+        moder.getModerableSections().add(moderable);
+        Usercard uc = ur.save(moder);
     }
 
     public void disrankModerOfSection(@NotNull Integer usercard,
                                       @NotNull Integer section) {
-        Section moderable = sr.findById(section).orElseThrow();
-        Usercard toDisrank = ur.findById(usercard).orElseThrow();
-
-        if (!moderable.getModers().remove(toDisrank))
-            throw new ArrayStoreException("user with this id was not the moder");
-
-        sr.save(moderable);
+        ur.disrankModer(section, usercard);
     }
 //// Section admins' operations end
 
     //// global admins' operations begin
-//    public void banUsercard(@NotNull Integer id) {
-//    }
+
 
     public void moveTopic(@NotNull Integer topic,
                           @NotNull Integer destSection) {
