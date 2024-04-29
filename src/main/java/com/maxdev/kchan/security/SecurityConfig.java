@@ -183,7 +183,12 @@ public class SecurityConfig {
                                         // messages operations END
                                         // all moders constraints checked in controllers
                                         // advanced admin endpoints
+                                        .requestMatchers("/error").permitAll() // TODO hide
+//                                        .requestMatchers("/section/*/moder").hasAuthority("ADMIN")
                                         .requestMatchers("/swagger-ui/**").permitAll()  // TODO hide under ADMIN
+                                        .requestMatchers("/swagger-ui*").permitAll()  // TODO hide under ADMIN
+                                        .requestMatchers("/v3/api-docs/**").permitAll()  // TODO hide under ADMIN
+
 //                                        .requestMatchers("/**").permitAll()  // TODO
                 )
 //                .authenticationProvider(userAuthenticationProvider)
