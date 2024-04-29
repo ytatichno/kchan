@@ -37,6 +37,15 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reply")
     private Message reply;
+
+    public Message(String message) {
+        this.message = message;
+        status = MessageStatus.CASUAL;
+    }
+
+    public Message() {
+
+    }
 }
 
 
