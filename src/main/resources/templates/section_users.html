@@ -26,7 +26,7 @@
                 <div class="col-sm-1 ">actions</div>
             </div>
             <div th:if="!${showModers}" class="list-content ">
-                <div class="row light-row" th:each="activeUser: ${activeUsers}">
+                <div class="row light-row" th:each="activeUser: ${activeUsers}" th:id="${activeUser.first.nick}">
                     <div class="id-col" th:text="${activeUser.first.id}"/>
                     <div class="col-md name-col" th:text="${activeUser.first.nick}"/>
                     <div class="col-lg name-col" th:text="${activeUser.first.about}" style="border-top: rgb(200, 211, 106) 1px solid;"/>
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div th:if="${showModers}" class="list-content ">
-                <div class="row light-row" th:each="moder: ${moders}">
+                <div class="row light-row" th:each="moder: ${moders}" th:id="${moder.nick}">
                     <div class="id-col" th:text="${moder.id}"/>
                     <div class="col-md name-col" th:text="${moder.nick}"/>
                     <div class="col-lg name-col" th:text="${moder.about}" style="border-top: rgb(200, 211, 106) 1px solid;"/>

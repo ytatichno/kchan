@@ -65,8 +65,7 @@
                     </div>
 <!--                    <a class="col-3 name-col" th:text="${message.author.nick}" th:href="'/u/' + ${message.author.id}"/>-->
 
-                    <div class="col-6 name-col" th:text="${message.message}"
-                         style="border-top: rgb(200, 211, 106) 1px solid; overflow-wrap: break-word;"/>
+                    <div class="col-6 name-col message-col" th:text="${message.message}"/>
                     <div class="col-sm name-col" th:text="${message.created}"/>
 <!--                    <div th:if="${canEdit}" class="col-sm-1 name-col">-->
 <!--                        <a class="btn align-items-center mb-2 mb-lg-0"-->

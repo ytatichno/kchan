@@ -283,4 +283,9 @@ body{
     text-decoration: none;
 }
 
+.message-col{
+    border-top: rgb(200, 211, 106) 1px solid;
+    overflow-wrap: break-word;
+}
+
 

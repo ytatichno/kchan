@@ -11,7 +11,7 @@
         <li><a href="/feedback" class="nav-link px-2 text-white">Фидбек</a></li>
       </ul>
       <div th:if="${user != null}" style="display: contents">
-        <div th:text="${user.email}" th:style="${user.usercard.isAdmin ? 'color: gold' : ''}"/>
+        <div id="user_email" th:text="${user.email}" th:style="${user.usercard.isAdmin ? 'color: gold' : ''}"/>
         <a href="/rest/auth/logout?httpResponse=true" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
           <img width="40" height="32" th:src="@{/svg/logout-svgrepo-com.svg}"/>
         </a>
